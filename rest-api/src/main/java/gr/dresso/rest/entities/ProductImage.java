@@ -2,8 +2,14 @@ package gr.dresso.rest.entities;
 
 import gr.dresso.rest.entities.Product;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
+@Getter
+@Setter
+@ToString
 @Table(name = "ProductImage")
 public class ProductImage {
 
@@ -21,46 +27,4 @@ public class ProductImage {
     @ManyToOne
     @JoinColumn(name = "productID")
     private Product product;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
-    public String getImageTitle() {
-        return imageTitle;
-    }
-
-    public void setImageTitle(String imageTitle) {
-        this.imageTitle = imageTitle;
-    }
-
-    public String getImageURL() {
-        return imageURL;
-    }
-
-    public void setImageURL(String imageURL) {
-        this.imageURL = imageURL;
-    }
-
-    @Override
-    public String toString() {
-        return "ProductImage{" +
-                "id='" + id + '\'' +
-                ", product=" + product +
-                ", imageTitle='" + imageTitle + '\'' +
-                ", imageURL=" + imageURL +
-                '}';
-    }
 }

@@ -1,9 +1,15 @@
 package gr.dresso.rest.entities;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "Cart")
+@Getter
+@Setter
+@ToString
 public class Cart {
 
     @Id
@@ -17,37 +23,4 @@ public class Cart {
     @ManyToOne
     @JoinColumn(name = "productID")
     private Product product;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
-    @Override
-    public String toString() {
-        return "Cart{" +
-                "id=" + id +
-                ", user=" + user +
-                ", product=" + product +
-                '}';
-    }
 }
