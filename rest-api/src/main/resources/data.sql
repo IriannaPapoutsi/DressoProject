@@ -1,13 +1,13 @@
 INSERT INTO "User" (firstName, lastName, postalCode, country, city, address, email, credits)
-VALUES ('Irianna', 'Papoutsi', '11526', 'Greece', 'Athens', 'Rostoviou 30-32', 'iriannapapoutsi@gmail.com', 15);
+VALUES ('Irianna', 'Papoutsi', '11526', 'Greece', 'Athens', 'Rostoviou 30-32', 'iriannapapoutsi@gmail.com', 50);
 INSERT INTO "User" (firstName, lastName, postalCode, country, city, address, email, credits)
-VALUES ('Giorgos', 'Lagoudakis', '14683', 'Greece', 'Keratsini', 'Amorgou 45', 'glagoudakis@gmail.com', 15);
+VALUES ('Giorgos', 'Lagoudakis', '14683', 'Greece', 'Keratsini', 'Amorgou 45', 'glagoudakis@gmail.com', 50);
 INSERT INTO "User" (firstName, lastName, postalCode, country, city, address, email, credits)
-VALUES ('Giannis', 'Papoutsis', '14379', 'Greece', 'Herakleion, Crete', 'Pl. Kornarou 27', 'gpapoutsis@gmail.com', 10);
+VALUES ('Giannis', 'Papoutsis', '14379', 'Greece', 'Herakleion, Crete', 'Pl. Kornarou 27', 'gpapoutsis@gmail.com', 20);
 INSERT INTO "User" (firstName, lastName, postalCode, country, city, address, email, credits)
-VALUES ('Emmeleia', 'Voutierou', '12567', 'Greece', 'Pireus', 'Thrakis 5', 'evoutierou@gmail.com', 8);
+VALUES ('Emmeleia', 'Voutierou', '12567', 'Greece', 'Pireus', 'Thrakis 5', 'evoutierou@gmail.com', 18);
 INSERT INTO "User" (firstName, lastName, postalCode, country, city, address, email, credits)
-VALUES ('Eirini', 'Papoutsi', '15234', 'Greece', 'Vyronas', 'Flemingk 81', 'epapoutsi@gmail.com', 5);
+VALUES ('Eirini', 'Papoutsi', '15234', 'Greece', 'Vyronas', 'Flemingk 81', 'epapoutsi@gmail.com', 15);
 
 INSERT INTO Color (name) VALUES ('Purple');
 INSERT INTO Color (name) VALUES ('Red');

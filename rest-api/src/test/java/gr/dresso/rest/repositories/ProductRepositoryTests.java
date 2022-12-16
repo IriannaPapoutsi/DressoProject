@@ -1,19 +1,18 @@
-package gr.dresso.rest.data;
+package gr.dresso.rest.repositories;
 
-import gr.dresso.rest.repositories.CartRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class CartRepositoryTests {
+public class ProductRepositoryTests {
 
     @Autowired
-    private CartRepository cartRepository;
+    private ProductRepository productRepository;
 
     @Test
     public void quickTest() {
-        cartRepository.findAll();
+        productRepository.findAll();
     }
 
 }

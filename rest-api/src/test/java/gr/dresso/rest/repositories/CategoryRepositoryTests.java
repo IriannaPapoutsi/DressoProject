@@ -1,19 +1,18 @@
-package gr.dresso.rest.data;
+package gr.dresso.rest.repositories;
 
-import gr.dresso.rest.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class UserRepositoryTests {
+public class CategoryRepositoryTests {
 
     @Autowired
-    private UserRepository userRepository;
+    private CategoryRepository categoryRepository;
 
     @Test
     public void quickTest() {
-        userRepository.findAll();
+        categoryRepository.findAll();
     }
 
 }

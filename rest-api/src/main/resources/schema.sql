@@ -1,4 +1,4 @@
-CREATE TABLE "User" (
+CREATE TABLE if not exists "User" (
     ID integer NOT NULL AUTO_INCREMENT,
     firstName varchar(30) NOT NULL,
     lastName varchar(30) NOT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE "User" (
     PRIMARY KEY (ID)
 );
 
-CREATE TABLE UserLogin (
+CREATE TABLE if not exists UserLogin (
     ID integer NOT NULL AUTO_INCREMENT,
     userID integer NOT NULL,
     username varchar(50) NOT NULL,
@@ -20,19 +20,19 @@ CREATE TABLE UserLogin (
     FOREIGN KEY (userID) REFERENCES "User"(ID)
 );
 
-CREATE TABLE Color (
+CREATE TABLE if not exists Color (
     ID integer NOT NULL AUTO_INCREMENT,
     name varchar(20) NOT NULL,
     PRIMARY KEY (ID)
 );
 
-CREATE TABLE Category (
+CREATE TABLE if not exists Category (
     ID integer NOT NULL AUTO_INCREMENT,
     name varchar(20) NOT NULL,
     PRIMARY KEY (ID)
 );
 
-CREATE TABLE Product (
+CREATE TABLE if not exists Product (
     ID integer NOT NULL AUTO_INCREMENT,
     colorID integer NOT NULL,
     categoryID integer NOT NULL,
@@ -45,7 +45,7 @@ CREATE TABLE Product (
     FOREIGN KEY (categoryID) REFERENCES Category(ID)
 );
 
-CREATE TABLE ProductImage (
+CREATE TABLE if not exists ProductImage (
     ID integer NOT NULL AUTO_INCREMENT,
     productID integer NOT NULL,
     imageTitle varchar(50) NOT NULL,
@@ -54,7 +54,7 @@ CREATE TABLE ProductImage (
     FOREIGN KEY (productID) REFERENCES Product(ID)
 );
 
-CREATE TABLE FavoriteProduct (
+CREATE TABLE if not exists FavoriteProduct (
     ID integer NOT NULL AUTO_INCREMENT,
     userID integer NOT NULL,
     productID integer NOT NULL,
@@ -63,7 +63,7 @@ CREATE TABLE FavoriteProduct (
     FOREIGN KEY (productID) REFERENCES Product(ID)
 );
 
-CREATE TABLE Cart (
+CREATE TABLE if not exists Cart (
     ID INTEGER NOT NULL AUTO_INCREMENT,
     userID integer NOT NULL,
     productID integer NOT NULL,

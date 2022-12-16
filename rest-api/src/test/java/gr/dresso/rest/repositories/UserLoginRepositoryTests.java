@@ -1,6 +1,5 @@
-package gr.dresso.rest.data;
+package gr.dresso.rest.repositories;
 
-import gr.dresso.rest.repositories.UserLoginRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

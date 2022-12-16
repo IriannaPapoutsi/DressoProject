@@ -1,19 +1,18 @@
-package gr.dresso.rest.data;
+package gr.dresso.rest.repositories;
 
-import gr.dresso.rest.repositories.FavoriteProductRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class FavoriteProductRepositoryTests {
+public class ColorRepositoryTests {
 
     @Autowired
-    private FavoriteProductRepository favoriteProductRepository;
+    private ColorRepository colorRepository;
 
     @Test
     public void quickTest() {
-        favoriteProductRepository.findAll();
+        colorRepository.findAll();
     }
 
 }
