@@ -1,10 +1,10 @@
-package gr.dresso.rest.data;
+package gr.dresso.rest.entities;
 
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Color")
-public class Color {
+@Table(name = "Category")
+public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +32,7 @@ public class Color {
 
     @Override
     public String toString() {
-        return "Color{" +
+        return "Category{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';

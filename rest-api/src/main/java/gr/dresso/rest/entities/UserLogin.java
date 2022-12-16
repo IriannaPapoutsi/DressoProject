@@ -1,5 +1,6 @@
-package gr.dresso.rest.data;
+package gr.dresso.rest.entities;
 
+import gr.dresso.rest.entities.User;
 import jakarta.persistence.*;
 
 @Entity

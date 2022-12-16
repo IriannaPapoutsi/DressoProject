@@ -1,4 +1,4 @@
-package gr.dresso.rest.data;
+package gr.dresso.rest.entities;
 
 import jakarta.persistence.*;
 

@@ -1,5 +1,6 @@
-package gr.dresso.rest.data;
+package gr.dresso.rest.repositories;
 
+import gr.dresso.rest.entities.FavoriteProduct;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
