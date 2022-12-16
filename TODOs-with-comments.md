@@ -74,10 +74,10 @@ in order to see that the error changes. ✔️
 If by saying <q>Instead of "." for the name of the property, you should use the ":"</q> you wanted me to write this:
 <blockquote>
 spring:<br>
-  <br>jpa:
-   <br> hibernate:
-      <br>naming:
-        <br>physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  jpa:<br>
+    hibernate:<br>
+      naming:<br>
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 </blockquote>
 <br>
 I didn't, but it worked just fine!
