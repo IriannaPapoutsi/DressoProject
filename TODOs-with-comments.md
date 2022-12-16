@@ -1,5 +1,10 @@
-On this file, we will be occasionally commenting the list of the todo's tasks after having been
+On this file, we will be occasionally making a list of the tasks that have priority and should be
 performed.
+
+Please have a look at the tasks below, and update their status with an "❌" or "✔️", depending on 
+whether they have been completed or not.
+
+In addition, we may writing down specific comments after completed the necessary tasks.
 
 <h1>TODOs Personal Comments:</h1>
 
