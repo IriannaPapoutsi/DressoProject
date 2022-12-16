@@ -38,7 +38,7 @@ CREATE TABLE Product (
     categoryID integer NOT NULL,
     name varchar(50) NOT NULL,
     price double NOT NULL,
-    description varchar(450) NOT NULL,
+    description varchar(550) NOT NULL,
     sku varchar(50) NOT NULL,
     PRIMARY KEY (ID),
     FOREIGN KEY (colorID) REFERENCES Color(ID),
@@ -49,7 +49,7 @@ CREATE TABLE ProductImage (
     ID integer NOT NULL AUTO_INCREMENT,
     productID integer NOT NULL,
     imageTitle varchar(50) NOT NULL,
-    imageURL varchar(500) NOT NULL,
+    imageURL varchar(550) NOT NULL,
     PRIMARY KEY (ID),
     FOREIGN KEY (productID) REFERENCES Product(ID)
 );
