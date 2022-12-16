@@ -4,7 +4,7 @@ performed.
 Please have a look at the tasks below, and update their status with an "❌" or "✔️", depending on 
 whether they have been completed or not.
 
-In addition, we may writing down specific comments after completed the necessary tasks.
+In addition, we may be writing down specific comments after completed the necessary tasks.
 
 <h1>TODOs Personal Comments:</h1>
 
