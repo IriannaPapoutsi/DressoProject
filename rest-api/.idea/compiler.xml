@@ -6,15 +6,17 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="rest-api" />
+        <module name="DressoProject" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="DressoProject" target="17" />
       <module name="rest-api" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="DressoProject" options="-parameters" />
       <module name="rest-api" options="-parameters" />
     </option>
   </component>
