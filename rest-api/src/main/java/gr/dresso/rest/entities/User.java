@@ -1,5 +1,7 @@
 package gr.dresso.rest.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -43,11 +45,14 @@ public class User {
     private double credits;
 
     @OneToOne(mappedBy = "user")
+    @JsonIgnore
     private UserLogin userLogin;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private Set<FavoriteProduct> favoriteProducts;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private Set<Cart> cart;
 }
