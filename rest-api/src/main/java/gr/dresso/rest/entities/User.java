@@ -45,7 +45,6 @@ public class User {
     private double credits;
 
     @OneToOne(mappedBy = "user")
-    @JsonIgnore
     private UserLogin userLogin;
 
     @OneToMany(mappedBy = "user")

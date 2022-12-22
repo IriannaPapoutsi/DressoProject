@@ -25,10 +25,10 @@ INSERT INTO Category (name) VALUES ('Dress');
 INSERT INTO Category (name) VALUES ('Skirt');
 INSERT INTO Category (name) VALUES ('Bags');
 
-INSERT INTO UserLogin (userID, username, password) VALUES ('1', 'iriannapap', 'codehubrocks!');
-INSERT INTO UserLogin (userID, username, password) VALUES ('2', 'lagoudakis', 'codehubrocksagain!');
-INSERT INTO UserLogin (userID, username, password) VALUES ('3', 'johnny', 'herakleionisthebest!');
-INSERT INTO UserLogin (userID, username, password) VALUES ('4', 'eme', 'DETsucks$');
+INSERT INTO UserLogin (userID, username, password) VALUES ('1', 'iriannapap', 'CodeHubrocks1!');
+INSERT INTO UserLogin (userID, username, password) VALUES ('2', 'lagoudakis', 'Codehubrocksagain1!');
+INSERT INTO UserLogin (userID, username, password) VALUES ('3', 'johnny', 'Herakleionisthebest22!');
+INSERT INTO UserLogin (userID, username, password) VALUES ('4', 'eme', 'DETsucks4$');
 INSERT INTO UserLogin (userID, username, password) VALUES ('5', 'eirini', 'ThinkBiz4ever!');
 
 INSERT INTO Product (colorID, categoryID, name, price, description, sku) VALUES ('3', '5', 'Mini Skirt', 29.99, 'Frenchy High Waist Textured Flare Skirt. You can match this item with plenty of blouses, t-shirts or een sweaters since it is an all season to wear skirt!', 'GS234');

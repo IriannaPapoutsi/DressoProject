@@ -2,7 +2,7 @@ CREATE TABLE if not exists "User" (
     ID integer NOT NULL AUTO_INCREMENT,
     firstName varchar(30) NOT NULL,
     lastName varchar(30) NOT NULL,
-    postalCode varchar(10) NOT NULL,
+    postalCode varchar(5) NOT NULL,
     country varchar(50) NOT NULL,
     city varchar(50)  NOT NULL,
     address varchar(50) NOT NULL,

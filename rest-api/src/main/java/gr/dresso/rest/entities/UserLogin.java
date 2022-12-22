@@ -1,5 +1,6 @@
 package gr.dresso.rest.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import gr.dresso.rest.entities.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -19,6 +20,7 @@ public class UserLogin {
 
     @OneToOne
     @JoinColumn(name = "userID")
+    @JsonIgnore
     private User user;
 
     @Column(name = "username")
