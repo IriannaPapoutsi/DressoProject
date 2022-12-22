@@ -1,13 +1,11 @@
 package gr.dresso.rest.controllers;
 
-import gr.dresso.rest.CreateUserDTO;
+import gr.dresso.rest.DTO.CreateUserDTO;
+import gr.dresso.rest.DTO.UserLoginDTO;
 import gr.dresso.rest.entities.User;
 import gr.dresso.rest.services.UserService;
-import gr.dresso.rest.services.impl.UserServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +31,11 @@ public class UserController {
     @PostMapping
     public ResponseEntity<User> createUser(@Valid @RequestBody CreateUserDTO createUserDTO) {
         return userService.createUser(createUserDTO);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity login(@Valid @RequestBody UserLoginDTO userLoginDTO){
+        return userService.checkUserLogin(userLoginDTO);
     }
 
 }

@@ -1,6 +1,7 @@
 package gr.dresso.rest.services.impl;
 
-import gr.dresso.rest.CreateUserDTO;
+import gr.dresso.rest.DTO.CreateUserDTO;
+import gr.dresso.rest.DTO.UserLoginDTO;
 import gr.dresso.rest.entities.User;
 import gr.dresso.rest.entities.UserLogin;
 import gr.dresso.rest.repositories.UserLoginRepository;
@@ -62,5 +63,13 @@ public class UserServiceImpl implements UserService {
         userLoginRepository.save(userLogin);
         user.setUserLogin(userLogin);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
+    }
+
+    public ResponseEntity checkUserLogin(UserLoginDTO userLoginDTO){
+        if (userLoginRepository.existsUserLoginByPassword(userLoginDTO.getPassword())
+            && userLoginRepository.existsUserLoginByUsername(userLoginDTO.getUsername())) {
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
     }
 }

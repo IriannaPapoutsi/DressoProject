@@ -1,4 +1,4 @@
-package gr.dresso.rest;
+package gr.dresso.rest.DTO;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
