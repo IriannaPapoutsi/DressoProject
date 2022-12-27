@@ -25,8 +25,7 @@ public class UserServiceImpl implements UserService {
         this.userLoginRepository = userLoginRepository;
     }
 
-
-
+    // TODO: @Override annotation is missing here
     public List<User> getAllUsers(){
         return userRepository.findAll();
     }
@@ -54,11 +53,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<User> createUser(CreateUserDTO createUserDTO) {
+        // TODO: The line below is too long, please break it to two lines
         if (userRepository.existsUserByEmail(createUserDTO.getEmail()) || userLoginRepository.existsUserLoginByUsername(createUserDTO.getUsername())) {
+            // TODO: .body(null) may not be required here, try using .build() instead
             return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
         }
         User user = createUserEntityFromDTO(createUserDTO);
         UserLogin userLogin = createUserLoginEntityFromDTO(user, createUserDTO);
+        // TODO: here you should be able to call "save" once for the user entity after setting the user login on it
+        // TODO: By saving the User with UserLogin on it, both the entities should be automatically saved
         userRepository.save(user);
         userLoginRepository.save(userLogin);
         user.setUserLogin(userLogin);
@@ -66,6 +69,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public ResponseEntity checkUserLogin(UserLoginDTO userLoginDTO){
+        // TODO: JPA supports the "and" operator. You can create a method that takes two parameters and is named existsUserLoginByUsernameAndPassword and only call that
         if (userLoginRepository.existsUserLoginByPassword(userLoginDTO.getPassword())
             && userLoginRepository.existsUserLoginByUsername(userLoginDTO.getUsername())) {
             return ResponseEntity.status(HttpStatus.OK).body(null);

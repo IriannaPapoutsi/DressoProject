@@ -10,5 +10,6 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Integer> {
     boolean existsUserByEmail(String email);
 
+    // TODO: findAll is a method that already exists in JpaRepository and you do not need to create it, so you may remove this
     List<User> findAll();
 }
