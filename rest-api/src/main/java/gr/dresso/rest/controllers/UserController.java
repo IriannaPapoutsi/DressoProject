@@ -14,23 +14,15 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-
-    // TODO: Make this final
-    private UserService userService;
-
+    private final UserService userService;
     @Autowired
     public UserController(UserService userService){
         this.userService = userService;
     }
 
-    // TODO: Make sure that user passwords do not appear in the response body because that is sensitive data
-    // TODO: For the above, check the @JsonIgnore annotation
     @GetMapping
     public List<User> getAllUsers() {
-        // TODO: No need to use "this" before the user service, since there is no other reference with that name
-        // TODO: You can also instantly return the method call instead of storing it in a variable, since you do not execute any extra operations on the variable
-        List<User> users = this.userService.getAllUsers();
-        return users;
+        return userService.getAllUsers();
     }
 
     @PostMapping

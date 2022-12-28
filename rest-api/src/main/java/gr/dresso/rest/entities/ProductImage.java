@@ -1,5 +1,6 @@
 package gr.dresso.rest.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import gr.dresso.rest.entities.Product;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -25,6 +26,7 @@ public class ProductImage {
     private String imageURL;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "productID")
     private Product product;
 }

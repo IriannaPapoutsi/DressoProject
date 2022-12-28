@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
         this.userLoginRepository = userLoginRepository;
     }
 
-    // TODO: @Override annotation is missing here
+    @Override
     public List<User> getAllUsers(){
         return userRepository.findAll();
     }
@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
         user.setCity(createUserDTO.getCity());
         user.setAddress(createUserDTO.getAddress());
         user.setEmail(createUserDTO.getEmail());
-        user.setCredits((createUserDTO.getCredits()));
+        user.setCredits(15.0);
         return user;
     }
 
@@ -68,6 +68,7 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
+    @Override
     public ResponseEntity checkUserLogin(UserLoginDTO userLoginDTO){
         // TODO: JPA supports the "and" operator. You can create a method that takes two parameters and is named existsUserLoginByUsernameAndPassword and only call that
         if (userLoginRepository.existsUserLoginByPassword(userLoginDTO.getPassword())

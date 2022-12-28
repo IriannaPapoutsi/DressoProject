@@ -1,5 +1,6 @@
 package gr.dresso.rest.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,10 +34,6 @@ public class Product {
     @Column(name = "sku")
     private String sku;
 
-    public int getId() {
-        return id;
-    }
-
     @ManyToOne
     @JoinColumn(name = "colorID")
     private Color color;
@@ -49,8 +46,10 @@ public class Product {
     private List<ProductImage> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "product")
+    @JsonIgnore
     private Set<FavoriteProduct> favoriteProducts;
 
     @OneToMany(mappedBy = "product")
+    @JsonIgnore
     private Set<Cart> cart;
 }
