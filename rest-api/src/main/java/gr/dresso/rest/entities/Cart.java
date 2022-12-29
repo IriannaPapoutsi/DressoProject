@@ -1,15 +1,11 @@
 package gr.dresso.rest.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 @Entity
 @Table(name = "Cart")
-@Getter
-@Setter
-@ToString
+@Data
 public class Cart {
 
     @Id

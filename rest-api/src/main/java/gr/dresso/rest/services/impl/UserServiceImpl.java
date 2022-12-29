@@ -1,7 +1,7 @@
 package gr.dresso.rest.services.impl;
 
-import gr.dresso.rest.DTO.CreateUserDTO;
-import gr.dresso.rest.DTO.UserLoginDTO;
+import gr.dresso.rest.dto.CreateUserDTO;
+import gr.dresso.rest.dto.UserLoginDTO;
 import gr.dresso.rest.entities.User;
 import gr.dresso.rest.entities.UserLogin;
 import gr.dresso.rest.repositories.UserLoginRepository;
@@ -53,10 +53,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<User> createUser(CreateUserDTO createUserDTO) {
-        // TODO: The line below is too long, please break it to two lines
-        if (userRepository.existsUserByEmail(createUserDTO.getEmail()) || userLoginRepository.existsUserLoginByUsername(createUserDTO.getUsername())) {
-            // TODO: .body(null) may not be required here, try using .build() instead
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+        if (userRepository.existsUserByEmail(createUserDTO.getEmail()) ||
+                userLoginRepository.existsUserLoginByUsername(createUserDTO.getUsername())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
         User user = createUserEntityFromDTO(createUserDTO);
         UserLogin userLogin = createUserLoginEntityFromDTO(user, createUserDTO);
@@ -70,9 +69,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity checkUserLogin(UserLoginDTO userLoginDTO){
-        // TODO: JPA supports the "and" operator. You can create a method that takes two parameters and is named existsUserLoginByUsernameAndPassword and only call that
-        if (userLoginRepository.existsUserLoginByPassword(userLoginDTO.getPassword())
-            && userLoginRepository.existsUserLoginByUsername(userLoginDTO.getUsername())) {
+        if (userLoginRepository.existsUserLoginByUsernameAndPassword(userLoginDTO.getUsername(), userLoginDTO.getPassword())) {
             return ResponseEntity.status(HttpStatus.OK).body(null);
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);

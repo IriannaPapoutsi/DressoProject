@@ -1,7 +1,7 @@
 package gr.dresso.rest.services;
 
-import gr.dresso.rest.DTO.CreateUserDTO;
-import gr.dresso.rest.DTO.UserLoginDTO;
+import gr.dresso.rest.dto.CreateUserDTO;
+import gr.dresso.rest.dto.UserLoginDTO;
 import gr.dresso.rest.entities.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;

@@ -23,7 +23,7 @@ INSERT INTO Category (name) VALUES ('Jeans');
 INSERT INTO Category (name) VALUES ('T-shirt');
 INSERT INTO Category (name) VALUES ('Dress');
 INSERT INTO Category (name) VALUES ('Skirt');
-INSERT INTO Category (name) VALUES ('Bags');
+INSERT INTO Category (name) VALUES ('Bag');
 
 INSERT INTO UserLogin (userID, username, password) VALUES ('1', 'iriannapap', 'CodeHubrocks1!');
 INSERT INTO UserLogin (userID, username, password) VALUES ('2', 'lagoudakis', 'Codehubrocksagain1!');

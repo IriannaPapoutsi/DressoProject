@@ -1,12 +1,10 @@
-package gr.dresso.rest.DTO;
+package gr.dresso.rest.dto;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
 @Data
 public class CreateUserDTO {
-
-    // TODO: Rename this package to have non-capitalized letters: DTO -> dto. This is a naming convention for java.
 
     @NotEmpty
     private String firstName;
@@ -30,11 +28,6 @@ public class CreateUserDTO {
     @NotEmpty
     @Email
     private String email;
-
-    // TODO: Credits should not be passed when creating a user. It should have a fixed value of 15 when creating a user, as mentioned on our exercise.
-    @DecimalMin("0.0")
-    @NotNull
-    private double credits;
 
     @NotEmpty
     private String username;

@@ -1,11 +1,9 @@
 package gr.dresso.rest.services.impl;
 
 import gr.dresso.rest.entities.Product;
-import gr.dresso.rest.repositories.CategoryRepository;
 import gr.dresso.rest.repositories.ProductRepository;
 import gr.dresso.rest.services.ProductService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,11 +11,9 @@ import java.util.List;
 @Service
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
-    private final CategoryRepository categoryRepository;
-
-    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository) {
+    @Autowired
+    public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
-        this.categoryRepository = categoryRepository;
     }
 
     @Override

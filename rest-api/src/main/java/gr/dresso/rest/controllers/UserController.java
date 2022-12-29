@@ -1,7 +1,7 @@
 package gr.dresso.rest.controllers;
 
-import gr.dresso.rest.DTO.CreateUserDTO;
-import gr.dresso.rest.DTO.UserLoginDTO;
+import gr.dresso.rest.dto.CreateUserDTO;
+import gr.dresso.rest.dto.UserLoginDTO;
 import gr.dresso.rest.entities.User;
 import gr.dresso.rest.services.UserService;
 import jakarta.validation.Valid;
