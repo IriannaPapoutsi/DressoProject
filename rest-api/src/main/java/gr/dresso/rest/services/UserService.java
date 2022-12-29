@@ -9,9 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 @Service
 public interface UserService {
-
     List<User> getAllUsers();
-
     /**
      * Method responsible for transforming a Data Transfer Object to actual user related entities and then
      * persisting them to the database.
@@ -19,7 +17,6 @@ public interface UserService {
      * @return the created and persisted user instance.
      */
     ResponseEntity<User> createUser(CreateUserDTO createUserDTO);
-
     /**
      * Method responsible for transforming a Data Transfer Object to actual userLogin related entities to check
      * if they already exists in the database.

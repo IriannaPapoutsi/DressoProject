@@ -13,9 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
-
     private final ProductService productService;
-
     @Autowired
     public ProductController(ProductService productService) {
         this.productService = productService;
@@ -24,19 +22,15 @@ public class ProductController {
     @GetMapping
     public List<Product> getAllProducts(@RequestParam(required = false) String name, @RequestParam(required = false) String category){
         if (name != null && category != null) {
-            System.out.println("Parameters are not null");
             return productService.getAllProductsByNameAndCategoryName(name, category);
         }
         else if (name != null) {
-            System.out.println("Parameter Name is not null");
             return productService.getAllProductsByName(name);
         }
         else if (category != null) {
-            System.out.println("categoryName is not null");
             return productService.getAllProductsByCategoryName(category);
         }
         else {
-            System.out.println("else statement");
             return productService.getAllProducts();
         }
     }
