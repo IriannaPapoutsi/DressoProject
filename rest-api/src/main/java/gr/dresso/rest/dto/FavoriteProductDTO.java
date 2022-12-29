@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 @Data
-public class ProductDTO {
+public class FavoriteProductDTO {
     @NotEmpty
     private String userId;
 

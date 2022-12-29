@@ -33,7 +33,7 @@ public class CartServiceImpl implements CartService {
         cart.setProduct(product);
         return cart;
     }
-
+    @Override
     public ResponseEntity<Cart> createCart(CartDTO cartDTO) {
         if (userRepository.existsUserById(cartDTO.getUserId())
                 && productRepository.existsProductById(cartDTO.getProductId())) {
@@ -43,11 +43,12 @@ public class CartServiceImpl implements CartService {
         }
         return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
     }
-
-    public ResponseEntity<Cart> deleteCart(CartDTO cartDTO){
+    @Override
+    public ResponseEntity deleteCart(CartDTO cartDTO){
         if (cartRepository.existsCartByUserIdAndProductId(cartDTO.getUserId(), cartDTO.getProductId())) {
             cartRepository.deleteCartByUserIdAndProductId(cartDTO.getUserId(), cartDTO.getProductId());
             return ResponseEntity.status(HttpStatus.OK).build();
+            // Why is this wrong? => ResponseEntity.status(HttpStatus.OK).body(cartDTO);
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
