@@ -33,6 +33,15 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll();
     }
 
+    @Override
+    public ResponseEntity<User> getUser(String userId) {
+        if (!userRepository.existsUserById(userId)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        User user = userRepository.findUserById(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(user);
+    }
+
     private User createUserEntityFromDTO(CreateUserDTO createUserDTO) {
         return User.builder()
                 .firstName(createUserDTO.getFirstName())

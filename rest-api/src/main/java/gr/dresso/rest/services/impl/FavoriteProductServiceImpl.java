@@ -2,6 +2,7 @@ package gr.dresso.rest.services.impl;
 
 import gr.dresso.rest.dto.FavoriteProductDTO;
 import gr.dresso.rest.entities.FavoriteProduct;
+import gr.dresso.rest.entities.Product;
 import gr.dresso.rest.repositories.FavoriteProductRepository;
 import gr.dresso.rest.repositories.ProductRepository;
 import gr.dresso.rest.repositories.UserRepository;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class FavoriteProductServiceImpl implements FavoriteProductService {
@@ -35,13 +38,11 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
     public ResponseEntity<FavoriteProduct> createFavoriteProduct(FavoriteProductDTO favoriteProductDTO) {
         if (userRepository.existsUserById(favoriteProductDTO.getUserId())
                 && productRepository.existsProductById(favoriteProductDTO.getProductId())) {
-            System.out.println("Mpainei sto if");
             FavoriteProduct favoriteProduct = createFavoriteProductEntityFromFTO(favoriteProductDTO);
             favoriteProductRepository.save(favoriteProduct);
             return ResponseEntity.status(HttpStatus.CREATED).body(favoriteProduct);
 
         }
-        System.out.println("Vgainei ektos if");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
@@ -52,5 +53,20 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
             return ResponseEntity.status(HttpStatus.OK).build();
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    private List<Product> getProductObjectList(String userId) {
+        List<FavoriteProduct> favoriteProductList = favoriteProductRepository.findAllByUserId(userId);
+        return favoriteProductList
+                .stream()
+                .map(x -> x.getProduct())
+                .toList();
+    }
+    @Override
+    public ResponseEntity<List<Product>> getFavoriteProductsByUser(String userId) {
+        if (!favoriteProductRepository.existsFavoriteProductByUserId(userId)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(getProductObjectList(userId));
     }
 }

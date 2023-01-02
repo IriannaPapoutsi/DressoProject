@@ -10,6 +10,7 @@ import java.util.List;
 @Service
 public interface UserService {
     List<User> getAllUsers();
+    ResponseEntity<User> getUser(String userId);
     /**
      * Method responsible for transforming a Data Transfer Object to actual user related entities and then
      * persisting them to the database.
