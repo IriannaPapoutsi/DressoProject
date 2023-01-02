@@ -2,8 +2,11 @@ package gr.dresso.rest.services;
 
 import gr.dresso.rest.dto.CartDTO;
 import gr.dresso.rest.entities.Cart;
+import gr.dresso.rest.entities.Product;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public interface CartService {
@@ -21,4 +24,5 @@ public interface CartService {
      * @return the created and persisted cart instance.
      */
     ResponseEntity<Cart> deleteCart(CartDTO cartDTO);
+    ResponseEntity<List<Product>> getCartByUserId(String userId);
 }

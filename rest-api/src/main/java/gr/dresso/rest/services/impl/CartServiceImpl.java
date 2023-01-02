@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CartServiceImpl implements CartService {
     private final UserRepository userRepository;
@@ -35,21 +37,29 @@ public class CartServiceImpl implements CartService {
     }
     @Override
     public ResponseEntity<Cart> createCart(CartDTO cartDTO) {
-        if (userRepository.existsUserById(cartDTO.getUserId())
-                && productRepository.existsProductById(cartDTO.getProductId())) {
-            Cart cart = createCartEntityFromDTO(cartDTO);
-            cartRepository.save(cart);
-            return ResponseEntity.status(HttpStatus.CREATED).body(cart);
+        if (!userRepository.existsUserById(cartDTO.getUserId())
+                || !productRepository.existsProductById(cartDTO.getProductId())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
         }
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+        Cart cart = createCartEntityFromDTO(cartDTO);
+        cartRepository.save(cart);
+        return ResponseEntity.status(HttpStatus.CREATED).body(cart);
     }
     @Override
     public ResponseEntity deleteCart(CartDTO cartDTO){
-        if (cartRepository.existsCartByUserIdAndProductId(cartDTO.getUserId(), cartDTO.getProductId())) {
-            cartRepository.deleteCartByUserIdAndProductId(cartDTO.getUserId(), cartDTO.getProductId());
-            return ResponseEntity.status(HttpStatus.OK).build();
-            // Why is this wrong? => ResponseEntity.status(HttpStatus.OK).body(cartDTO);
+        if (!cartRepository.existsCartByUserIdAndProductId(cartDTO.getUserId(), cartDTO.getProductId())) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        cartRepository.deleteCartByUserIdAndProductId(cartDTO.getUserId(), cartDTO.getProductId());
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+    @Override
+    public ResponseEntity<List<Product>> getCartByUserId(String userId) {
+        if (!userRepository.existsUserById(userId)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        List<Cart> cartList = cartRepository.findAllByUserId(userId);
+        List<Product> cartProductList = cartList.stream().map(cartItem -> cartItem.getProduct()).toList();
+        return ResponseEntity.status(HttpStatus.OK).body(cartProductList);
     }
 }
