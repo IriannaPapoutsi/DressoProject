@@ -8,6 +8,7 @@ import gr.dresso.rest.repositories.UserLoginRepository;
 import gr.dresso.rest.repositories.UserRepository;
 import gr.dresso.rest.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.config.RepositoryNameSpaceHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -82,5 +83,15 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.status(HttpStatus.OK).build();
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    @Override
+    public ResponseEntity<User> deleteUserById(String userId) {
+        if (!userRepository.existsUserById(userId)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        User user = userRepository.findUserById(userId);
+        userRepository.deleteUserById(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 }

@@ -4,6 +4,7 @@ import gr.dresso.rest.dto.CreateUserDTO;
 import gr.dresso.rest.dto.UserLoginDTO;
 import gr.dresso.rest.entities.User;
 import gr.dresso.rest.services.UserService;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@Transactional
 @RequestMapping("/api/users")
 public class UserController {
     private final UserService userService;
@@ -36,6 +38,11 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<Void> login(@Valid @RequestBody UserLoginDTO userLoginDTO){
         return userService.checkUserLogin(userLoginDTO);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<User> deleteUserByUserId(@RequestParam String userId) {
+        return userService.deleteUserById(userId);
     }
 
 }
