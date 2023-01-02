@@ -1,24 +1,22 @@
 package gr.dresso.rest.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.Set;
 
 @Entity
-@Getter
-@Setter
-@ToString
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name="User")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
-    private int id;
+    private String id;
 
     @Column(name = "firstName")
     private String firstName;
@@ -44,14 +42,14 @@ public class User {
     @Column(name = "credits")
     private double credits;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private UserLogin userLogin;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<FavoriteProduct> favoriteProducts;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<Cart> cart;
 }

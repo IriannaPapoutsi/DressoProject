@@ -16,6 +16,9 @@ import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    private static final double DEFAULT_CREDITS_ON_SIGN_UP = 15.0;
+
     private final UserRepository userRepository;
     private final UserLoginRepository userLoginRepository;
 
@@ -26,29 +29,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAllUsers(){
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
     private User createUserEntityFromDTO(CreateUserDTO createUserDTO) {
-        User user = new User();
-        user.setFirstName(createUserDTO.getFirstName());
-        user.setLastName(createUserDTO.getLastName());
-        user.setPostalCode(createUserDTO.getPostalCode());
-        user.setCountry(createUserDTO.getCountry());
-        user.setCity(createUserDTO.getCity());
-        user.setAddress(createUserDTO.getAddress());
-        user.setEmail(createUserDTO.getEmail());
-        user.setCredits(15.0);
-        return user;
+        return User.builder()
+                .firstName(createUserDTO.getFirstName())
+                .lastName(createUserDTO.getLastName())
+                .postalCode(createUserDTO.getPostalCode())
+                .country(createUserDTO.getCountry())
+                .city(createUserDTO.getCity())
+                .address(createUserDTO.getAddress())
+                .email(createUserDTO.getEmail())
+                .credits(DEFAULT_CREDITS_ON_SIGN_UP)
+                .build();
     }
 
     private UserLogin createUserLoginEntityFromDTO(User user, CreateUserDTO createUserDTO) {
-        UserLogin userLogin = new UserLogin();
-        userLogin.setUser(user);
-        userLogin.setUsername(createUserDTO.getUsername());
-        userLogin.setPassword(createUserDTO.getPassword());
-        return userLogin;
+        return UserLogin.builder()
+                .user(user)
+                .username(createUserDTO.getUsername())
+                .password(createUserDTO.getPassword())
+                .build();
     }
 
     @Override
@@ -59,19 +62,16 @@ public class UserServiceImpl implements UserService {
         }
         User user = createUserEntityFromDTO(createUserDTO);
         UserLogin userLogin = createUserLoginEntityFromDTO(user, createUserDTO);
-        // TODO: here you should be able to call "save" once for the user entity after setting the user login on it
-        // TODO: By saving the User with UserLogin on it, both the entities should be automatically saved
-        userRepository.save(user);
-        userLoginRepository.save(userLogin);
         user.setUserLogin(userLogin);
+        userRepository.save(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
     @Override
-    public ResponseEntity checkUserLogin(UserLoginDTO userLoginDTO){
+    public ResponseEntity<Void> checkUserLogin(UserLoginDTO userLoginDTO) {
         if (userLoginRepository.existsUserLoginByUsernameAndPassword(userLoginDTO.getUsername(), userLoginDTO.getPassword())) {
-            return ResponseEntity.status(HttpStatus.OK).body(null);
+            return ResponseEntity.status(HttpStatus.OK).build();
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }

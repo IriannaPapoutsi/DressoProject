@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@Transactional
 @RequestMapping("api/cart")
 public class CartController {
     private final CartService cartService;
@@ -25,14 +26,24 @@ public class CartController {
         return cartService.createCart(cartDTO);
     }
 
-    @Transactional
     @DeleteMapping
-    public ResponseEntity<Cart> deleteCart(@RequestBody CartDTO cartDTO) {
-        return cartService.deleteCart(cartDTO);
+    public ResponseEntity<Cart> deleteCart(@RequestParam String userId) {
+        return cartService.deleteCart(userId);
+    }
+
+    @DeleteMapping("item")
+    public ResponseEntity<Cart> deleteCartItem(@RequestBody CartDTO cartDTO) {
+        return cartService.deleteCartItem(cartDTO);
     }
 
     @GetMapping
     public ResponseEntity<List<Product>> getCartProductsByUserId(@RequestParam String userId) {
         return cartService.getCartByUserId(userId);
     }
+
+    @PostMapping("checkout")
+    public ResponseEntity<String> checkoutBalance(@RequestParam String userId) {
+        return cartService.checkoutBalance(userId);
+    }
+
 }

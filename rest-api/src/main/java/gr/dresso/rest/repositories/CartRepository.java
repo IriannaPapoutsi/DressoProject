@@ -9,6 +9,8 @@ import java.util.List;
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Integer> {
     boolean existsCartByUserIdAndProductId(String userId, String productId);
+    boolean existsCartByUserId(String userId);
     void deleteCartByUserIdAndProductId(String userId, String productId);
+    void deleteCartByUserId(String userId);
     List<Cart> findAllByUserId(String userId);
 }

@@ -20,7 +20,7 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
-    private int id;
+    private String id;
 
     @Column(name = "name")
     private String name;
@@ -34,6 +34,9 @@ public class Product {
     @Column(name = "sku")
     private String sku;
 
+    @Column(name = "stock")
+    private int stock;
+
     @ManyToOne
     @JoinColumn(name = "colorID")
     private Color color;
@@ -42,14 +45,14 @@ public class Product {
     @JoinColumn(name = "categoryID")
     private Category category;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ProductImage> images = new ArrayList<>();
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<FavoriteProduct> favoriteProducts;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<Cart> cart;
 }

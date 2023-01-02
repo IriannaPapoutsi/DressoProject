@@ -23,5 +23,5 @@ public interface UserService {
      * @param userLoginDTO is the Data Transfer Object with the user credentials to be checked.
      * @return the status of whether the credentials are confirmed or not.
      */
-    ResponseEntity checkUserLogin(UserLoginDTO userLoginDTO);
+    ResponseEntity<Void> checkUserLogin(UserLoginDTO userLoginDTO);
 }

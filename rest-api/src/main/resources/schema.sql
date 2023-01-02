@@ -40,6 +40,7 @@ CREATE TABLE if not exists Product (
     price double NOT NULL,
     description varchar(550) NOT NULL,
     sku varchar(50) NOT NULL,
+    stock integer NOT NULL,
     PRIMARY KEY (ID),
     FOREIGN KEY (colorID) REFERENCES Color(ID),
     FOREIGN KEY (categoryID) REFERENCES Category(ID)

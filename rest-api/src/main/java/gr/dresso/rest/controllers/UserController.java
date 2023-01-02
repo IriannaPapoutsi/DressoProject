@@ -30,10 +30,8 @@ public class UserController {
         return userService.createUser(createUserDTO);
     }
 
-    // TODO: Make this return ResponseEntity<Void>, check: https://stevenschwenke.de/ReturningAnEmptyResponseEntityInSpringMVC
-    // TODO: You can also return it as ResponseEntity.status(<X>).build(), instead of using the new keyword
     @PostMapping("/login")
-    public ResponseEntity login(@Valid @RequestBody UserLoginDTO userLoginDTO){
+    public ResponseEntity<Void> login(@Valid @RequestBody UserLoginDTO userLoginDTO){
         return userService.checkUserLogin(userLoginDTO);
     }
 

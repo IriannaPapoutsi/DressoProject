@@ -3,15 +3,14 @@ package gr.dresso.rest.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import gr.dresso.rest.entities.User;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Entity
-@Getter
-@Setter
-@ToString
+@Data
 @Table(name = "UserLogin")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserLogin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

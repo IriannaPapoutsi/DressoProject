@@ -11,7 +11,7 @@ public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
-    private int id;
+    private String id;
 
     @ManyToOne
     @JoinColumn(name = "userID")
