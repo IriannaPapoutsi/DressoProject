@@ -1,6 +1,7 @@
 package gr.dresso.rest.controllers;
 
 import gr.dresso.rest.dto.CreateUserDTO;
+import gr.dresso.rest.dto.UpdateUserDTO;
 import gr.dresso.rest.dto.UserLoginDTO;
 import gr.dresso.rest.entities.User;
 import gr.dresso.rest.services.UserService;
@@ -43,6 +44,11 @@ public class UserController {
     @DeleteMapping
     public ResponseEntity<User> deleteUserByUserId(@RequestParam String userId) {
         return userService.deleteUserById(userId);
+    }
+
+    @PutMapping
+    public ResponseEntity<User> updateUserProfile(@Valid @RequestBody UpdateUserDTO updateUserDTO, @RequestParam String userId) {
+        return userService.updateUser(updateUserDTO, userId);
     }
 
 }

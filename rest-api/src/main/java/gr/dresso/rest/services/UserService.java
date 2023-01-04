@@ -1,6 +1,7 @@
 package gr.dresso.rest.services;
 
 import gr.dresso.rest.dto.CreateUserDTO;
+import gr.dresso.rest.dto.UpdateUserDTO;
 import gr.dresso.rest.dto.UserLoginDTO;
 import gr.dresso.rest.entities.User;
 import jakarta.transaction.Transactional;
@@ -29,4 +30,5 @@ public interface UserService {
     ResponseEntity<Void> checkUserLogin(UserLoginDTO userLoginDTO);
 
     ResponseEntity<User> deleteUserById(String userId);
+    ResponseEntity<User> updateUser(UpdateUserDTO updateUserDTO, String userId);
 }

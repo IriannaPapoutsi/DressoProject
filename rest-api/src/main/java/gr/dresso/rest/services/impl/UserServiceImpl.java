@@ -1,6 +1,7 @@
 package gr.dresso.rest.services.impl;
 
 import gr.dresso.rest.dto.CreateUserDTO;
+import gr.dresso.rest.dto.UpdateUserDTO;
 import gr.dresso.rest.dto.UserLoginDTO;
 import gr.dresso.rest.entities.User;
 import gr.dresso.rest.entities.UserLogin;
@@ -94,4 +95,53 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteUserById(userId);
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
+
+    private User updateUserEntityFromDTO(UpdateUserDTO updateUserDTO, String userId) {
+        User user = userRepository.findUserById(userId);
+        if (updateUserDTO.getFirstName() != null) {
+            user.setFirstName(updateUserDTO.getFirstName());
+        }
+        if (updateUserDTO.getLastName() != null) {
+            user.setLastName(updateUserDTO.getLastName());
+        }
+        if (updateUserDTO.getPostalCode() != null) {
+            user.setPostalCode(updateUserDTO.getPostalCode());
+        }
+        if (updateUserDTO.getCountry() != null) {
+            user.setCountry(updateUserDTO.getCountry());
+        }
+        if (updateUserDTO.getCity() != null) {
+            user.setCity(updateUserDTO.getCity());
+        }
+        if (updateUserDTO.getAddress() != null) {
+            user.setAddress(updateUserDTO.getAddress());
+        }
+        if (updateUserDTO.getEmail() != null) {
+            user.setEmail(updateUserDTO.getEmail());
+        }
+        return user;
+    }
+
+    private UserLogin updateUserLoginEntityFromDTO(User user, UpdateUserDTO updateUserDTO) {
+        UserLogin userLogin = user.getUserLogin();
+        if (updateUserDTO.getUsername() != null) {
+           userLogin.setUsername(updateUserDTO.getUsername());
+        }
+        if (updateUserDTO.getPassword() != null) {
+            userLogin.setPassword(updateUserDTO.getPassword());
+        }
+        return userLogin;
+    }
+    @Override
+    public ResponseEntity<User> updateUser(UpdateUserDTO updateUserDTO, String userId) {
+        if (!userRepository.existsUserById(userId)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        User user = updateUserEntityFromDTO(updateUserDTO, userId);
+        UserLogin userLogin = updateUserLoginEntityFromDTO(user, updateUserDTO);
+        user.setUserLogin(userLogin);
+        userRepository.save(user);
+        return ResponseEntity.status(HttpStatus.OK).body(user);
+    }
+
 }
