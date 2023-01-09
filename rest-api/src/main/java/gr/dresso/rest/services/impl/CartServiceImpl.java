@@ -8,7 +8,6 @@ import gr.dresso.rest.repositories.CartRepository;
 import gr.dresso.rest.repositories.ProductRepository;
 import gr.dresso.rest.repositories.UserRepository;
 import gr.dresso.rest.services.CartService;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +41,7 @@ public class CartServiceImpl implements CartService {
     public ResponseEntity<Cart> createCart(CartDTO cartDTO) {
         if (!userRepository.existsUserById(cartDTO.getUserId())
                 || !productRepository.existsProductById(cartDTO.getProductId())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
         Cart cart = createCartEntityFromDTO(cartDTO);
         cartRepository.save(cart);

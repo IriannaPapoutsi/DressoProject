@@ -9,7 +9,6 @@ import gr.dresso.rest.repositories.UserLoginRepository;
 import gr.dresso.rest.repositories.UserRepository;
 import gr.dresso.rest.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.config.RepositoryNameSpaceHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -69,7 +68,7 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<User> createUser(CreateUserDTO createUserDTO) {
         if (userRepository.existsUserByEmail(createUserDTO.getEmail()) ||
                 userLoginRepository.existsUserLoginByUsername(createUserDTO.getUsername())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
         User user = createUserEntityFromDTO(createUserDTO);
         UserLogin userLogin = createUserLoginEntityFromDTO(user, createUserDTO);

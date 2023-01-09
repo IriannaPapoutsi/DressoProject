@@ -26,7 +26,7 @@ public class UserController {
     @GetMapping
     public List<User> getAllUsers() { return userService.getAllUsers(); }
 
-    @GetMapping("user")
+    @GetMapping("/user")
     public ResponseEntity<User> getUser(@RequestParam String userId) {
         return userService.getUser(userId);
     }
