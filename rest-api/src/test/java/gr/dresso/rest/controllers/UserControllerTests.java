@@ -1,16 +1,14 @@
 package gr.dresso.rest.controllers;
 
-import static net.bytebuddy.matcher.ElementMatchers.erasure;
-import static net.bytebuddy.matcher.ElementMatchers.is;
+
 import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gr.dresso.rest.dto.CreateUserDTO;
+import gr.dresso.rest.dto.UpdateUserDTO;
 import gr.dresso.rest.dto.UserLoginDTO;
-import gr.dresso.rest.entities.UserLogin;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -209,7 +207,7 @@ public class UserControllerTests {
 
         // When
         mockMvc.perform(
-                    MockMvcRequestBuilders.delete("/api/users?userId=" + userId))
+                        MockMvcRequestBuilders.delete("/api/users?userId=" + userId))
                 // Then
                 .andExpect(status().isOk());
     }
@@ -224,5 +222,69 @@ public class UserControllerTests {
                         MockMvcRequestBuilders.delete("/api/users?userId=" + userId))
                 // Then
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void updateUserProfile_givenValidRequestBody_shouldReturnOkStatus() throws Exception {
+        // Given
+        UpdateUserDTO updateUserDTO = UpdateUserDTO
+                .builder()
+                .country("Italy")
+                .city("Turin")
+                .address("Via Verde 28")
+                .postalCode("56734")
+                .build();
+        String userId = "1";
+
+        // When
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/api/users?userId=" + userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(updateUserDTO)))
+                // Then
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void updateUserProfile_givenInvalidUserIdRequestBody_shouldReturnNotFoundStatus() throws Exception {
+        // Given
+        UpdateUserDTO updateUserDTO = UpdateUserDTO
+                .builder()
+                .country("Italy")
+                .city("Turin")
+                .address("Via Verde 28")
+                .postalCode("56734")
+                .build();
+        String userId = "100000";
+
+        // When
+        mockMvc.perform(
+                        MockMvcRequestBuilders.put("/api/users?userId=" + userId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(asJsonString(updateUserDTO)))
+                // Then
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void updateUserProfile_givenInvalidPostalCodeRequestBody_shouldReturnBadRequestStatus() throws Exception {
+        // Given
+        UpdateUserDTO updateUserDTO = UpdateUserDTO
+                .builder()
+                .country("Italy")
+                .city("Turin")
+                .address("Via Verde 28")
+                // Postal Code should be 5 numbers exactly
+                .postalCode("56734$#$")
+                .build();
+        String userId = "1";
+
+        // When
+        mockMvc.perform(
+                        MockMvcRequestBuilders.put("/api/users?userId=" + userId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(asJsonString(updateUserDTO)))
+                // Then
+                .andExpect(status().isBadRequest());
     }
 }

@@ -21,7 +21,7 @@ public class FavoriteProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Product>> getAllFavoriteProductsByUser(@RequestParam String userId) {
+    public ResponseEntity<List<Product>> getAllFavoriteProductsByUserId(@RequestParam String userId) {
         return favoriteProductService.getFavoriteProductsByUser(userId);
     }
     @PostMapping
