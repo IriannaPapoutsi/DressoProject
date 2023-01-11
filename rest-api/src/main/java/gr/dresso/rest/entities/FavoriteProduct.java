@@ -1,14 +1,10 @@
 package gr.dresso.rest.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Entity
-@Getter
-@Setter
-@ToString
+@Data
 @Table(name = "FavoriteProduct")
 public class FavoriteProduct {
 

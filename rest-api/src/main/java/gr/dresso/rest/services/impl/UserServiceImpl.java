@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
-    private User createUserEntityFromDTO(CreateUserDTO createUserDTO) {
+    User createUserEntityFromDTO(CreateUserDTO createUserDTO) {
         return User.builder()
                 .firstName(createUserDTO.getFirstName())
                 .lastName(createUserDTO.getLastName())
@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
-    private UserLogin createUserLoginEntityFromDTO(User user, CreateUserDTO createUserDTO) {
+    UserLogin createUserLoginEntityFromDTO(User user, CreateUserDTO createUserDTO) {
         return UserLogin.builder()
                 .user(user)
                 .username(createUserDTO.getUsername())
@@ -95,7 +95,7 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
-    private User updateUserEntityFromDTO(UpdateUserDTO updateUserDTO, String userId) {
+    User updateUserEntityFromDTO(UpdateUserDTO updateUserDTO, String userId) {
         User user = userRepository.findUserById(userId);
         if (updateUserDTO.getFirstName() != null) {
             user.setFirstName(updateUserDTO.getFirstName());
@@ -121,16 +121,17 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    private UserLogin updateUserLoginEntityFromDTO(User user, UpdateUserDTO updateUserDTO) {
+    UserLogin updateUserLoginEntityFromDTO(User user, UpdateUserDTO updateUserDTO) {
         UserLogin userLogin = user.getUserLogin();
         if (updateUserDTO.getUsername() != null) {
-           userLogin.setUsername(updateUserDTO.getUsername());
+            userLogin.setUsername(updateUserDTO.getUsername());
         }
         if (updateUserDTO.getPassword() != null) {
             userLogin.setPassword(updateUserDTO.getPassword());
         }
         return userLogin;
     }
+
     @Override
     public ResponseEntity<User> updateUser(UpdateUserDTO updateUserDTO, String userId) {
         if (!userRepository.existsUserById(userId)) {

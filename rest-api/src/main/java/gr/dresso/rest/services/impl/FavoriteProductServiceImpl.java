@@ -19,6 +19,7 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
     private final FavoriteProductRepository favoriteProductRepository;
+
     @Autowired
     public FavoriteProductServiceImpl(UserRepository userRepository,
                                       ProductRepository productRepository, FavoriteProductRepository favoriteProductRepository) {
@@ -27,7 +28,7 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
         this.favoriteProductRepository = favoriteProductRepository;
     }
 
-    public FavoriteProduct createFavoriteProductEntityFromFTO(FavoriteProductDTO favoriteProductDTO) {
+    public FavoriteProduct createFavoriteProductEntityFromDTO(FavoriteProductDTO favoriteProductDTO) {
         FavoriteProduct favoriteProduct = new FavoriteProduct();
         favoriteProduct.setUser(userRepository.findUserById(favoriteProductDTO.getUserId()));
         favoriteProduct.setProduct(productRepository.findProductById(favoriteProductDTO.getProductId()));
@@ -38,7 +39,7 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
     public ResponseEntity<FavoriteProduct> createFavoriteProduct(FavoriteProductDTO favoriteProductDTO) {
         if (userRepository.existsUserById(favoriteProductDTO.getUserId())
                 && productRepository.existsProductById(favoriteProductDTO.getProductId())) {
-            FavoriteProduct favoriteProduct = createFavoriteProductEntityFromFTO(favoriteProductDTO);
+            FavoriteProduct favoriteProduct = createFavoriteProductEntityFromDTO(favoriteProductDTO);
             favoriteProductRepository.save(favoriteProduct);
             return ResponseEntity.status(HttpStatus.CREATED).body(favoriteProduct);
 
@@ -55,13 +56,14 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    private List<Product> getProductObjectList(String userId) {
+    List<Product> getProductObjectList(String userId) {
         List<FavoriteProduct> favoriteProductList = favoriteProductRepository.findAllByUserId(userId);
         return favoriteProductList
                 .stream()
                 .map(x -> x.getProduct())
                 .toList();
     }
+
     @Override
     public ResponseEntity<List<Product>> getFavoriteProductsByUser(String userId) {
         if (!favoriteProductRepository.existsFavoriteProductByUserId(userId)) {

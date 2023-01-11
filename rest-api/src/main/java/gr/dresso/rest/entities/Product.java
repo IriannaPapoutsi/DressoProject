@@ -2,18 +2,17 @@ package gr.dresso.rest.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 @Entity
-@Getter
-@Setter
-@ToString
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "Product")
 public class Product {
 

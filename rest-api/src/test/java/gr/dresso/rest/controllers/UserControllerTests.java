@@ -27,7 +27,7 @@ public class UserControllerTests {
     private MockMvc mockMvc;
 
     @Test
-    public void getAllUsers_shouldReturnCorrectUserSizeList() throws Exception {
+    public void getAllUsers_shouldReturnCorrectUserListSize() throws Exception {
         // When
         mockMvc.perform(get("/api/users")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -43,7 +43,7 @@ public class UserControllerTests {
 
         // When
         mockMvc.perform(
-                        get("/api/cart/user?userId=" + userId))
+                        get("/api/users/user?userId=" + userId))
                 // Then
                 .andExpect(status().isNotFound());
     }
@@ -189,7 +189,7 @@ public class UserControllerTests {
     @Test
     public void login_givenInvalidPasswordRequestBody_shouldReturnUnauthorizedStatus() throws Exception {
         // Given
-        UserLoginDTO userLoginDTO = new UserLoginDTO("iriannapap", "CodeHubrocks23!");
+        UserLoginDTO userLoginDTO = new UserLoginDTO("iriannapap", "CodeHubrocks23!"); // Wrong password given
 
         // When
         mockMvc.perform(
@@ -276,6 +276,29 @@ public class UserControllerTests {
                 .address("Via Verde 28")
                 // Postal Code should be 5 numbers exactly
                 .postalCode("56734$#$")
+                .build();
+        String userId = "1";
+
+        // When
+        mockMvc.perform(
+                        MockMvcRequestBuilders.put("/api/users?userId=" + userId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(asJsonString(updateUserDTO)))
+                // Then
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void updateUserProfile_givenInvalidPasswordRequestBody_shouldReturnBadRequestStatus() throws Exception {
+        // Given
+        UpdateUserDTO updateUserDTO = UpdateUserDTO
+                .builder()
+                .country("Italy")
+                .city("Turin")
+                .address("Via Verde 28")
+                // Postal Code should be 5 numbers exactly
+                .postalCode("56734$#$")
+                .password("Missingnumbers!")
                 .build();
         String userId = "1";
 
