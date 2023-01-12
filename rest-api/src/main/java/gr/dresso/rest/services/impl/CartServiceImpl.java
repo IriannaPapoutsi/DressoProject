@@ -28,7 +28,7 @@ public class CartServiceImpl implements CartService {
         this.cartRepository = cartRepository;
     }
 
-    public Cart createCartEntityFromDTO(CartDTO cartDTO) {
+    Cart createCartEntityFromDTO(CartDTO cartDTO) {
         User user = userRepository.findUserById(cartDTO.getUserId()); // Is this something I should instantly pu in setUser()?
         Product product = productRepository.findProductById(cartDTO.getProductId());
         Cart cart = new Cart();
@@ -66,13 +66,12 @@ public class CartServiceImpl implements CartService {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    private List<Product> getCartProductsListByUser(String userId) {
+    List<Product> getCartProductsListByUser(String userId) {
         List<Cart> cartList = cartRepository.findAllByUserId(userId);
         return cartList
                 .stream()
                 .map(cartItem -> cartItem.getProduct())
                 .toList();
-
     }
 
     @Override
@@ -84,7 +83,7 @@ public class CartServiceImpl implements CartService {
         return ResponseEntity.status(HttpStatus.OK).body(cartProductList);
     }
 
-    private double calculateCartCost(String userId) {
+    double calculateCartCost(String userId) {
         List<Product> cartProducts = getCartProductsListByUser(userId);
         return cartProducts
                 .stream()
@@ -92,7 +91,7 @@ public class CartServiceImpl implements CartService {
                 .sum();
     }
 
-    private void reduceProductStock(String userId) {
+    void reduceProductStock(String userId) {
         List<Product> cartProductList = getCartProductsListByUser(userId);
         cartProductList.forEach(x -> {
             x.setStock(x.getStock() - 1);
@@ -100,7 +99,7 @@ public class CartServiceImpl implements CartService {
         });
     }
 
-    private void reduceUserCredits(User user, double totalCost){
+    void reduceUserCredits(User user, double totalCost) {
         double remainedCredits = user.getCredits() - totalCost;
         user.setCredits(Math.round(remainedCredits * 100.0) / 100.0);
         userRepository.save(user);
@@ -122,6 +121,6 @@ public class CartServiceImpl implements CartService {
         reduceProductStock(userId);
         deleteCart(userId);
         return ResponseEntity.status(HttpStatus.OK).body("Checkout successfully made! Your remained credits are now "
-        + user.getCredits() + " :)");
+                + user.getCredits() + " :)");
     }
 }
