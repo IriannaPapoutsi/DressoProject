@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+// TODO: @Data should not be used with Hibernate / JPA entities (Check warning and look it up)
 @Entity
 @Data
 @Builder
@@ -54,4 +55,5 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<Cart> cart;
+    // TODO: Newline here
 }

@@ -7,9 +7,11 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class FavoriteProductDTO {
+    // TODO: Newline here
     @NotEmpty
     private String userId;
 
     @NotEmpty
     private String ProductId;
+    // TODO: Newline here
 }

@@ -8,10 +8,12 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class UserLoginDTO {
+    // TODO: Newline here
     @NotEmpty
     private String username;
 
     @NotEmpty
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$")
     private String password;
+    // TODO: Newline here
 }
