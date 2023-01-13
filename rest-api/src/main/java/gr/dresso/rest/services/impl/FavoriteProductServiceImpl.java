@@ -47,8 +47,10 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
+    // TODO: Use ResponseEntity<Void>, instead of raw values
     @Override
     public ResponseEntity deleteFavoriteProduct(FavoriteProductDTO favoriteProductDTO) {
+        // TODO: Lines are too long
         if (favoriteProductRepository.existsFavoriteProductByUserIdAndProductId(favoriteProductDTO.getUserId(), favoriteProductDTO.getProductId())) {
             favoriteProductRepository.deleteFavoriteProductByUserIdAndProductId(favoriteProductDTO.getUserId(), favoriteProductDTO.getProductId());
             return ResponseEntity.status(HttpStatus.OK).build();
@@ -60,6 +62,7 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
         List<FavoriteProduct> favoriteProductList = favoriteProductRepository.findAllByUserId(userId);
         return favoriteProductList
                 .stream()
+                // TODO: Method reference may be used, check warning
                 .map(x -> x.getProduct())
                 .toList();
     }

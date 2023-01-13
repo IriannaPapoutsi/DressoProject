@@ -29,7 +29,7 @@ public class CartServiceImpl implements CartService {
     }
 
     Cart createCartEntityFromDTO(CartDTO cartDTO) {
-        User user = userRepository.findUserById(cartDTO.getUserId()); // Is this something I should instantly pu in setUser()?
+        User user = userRepository.findUserById(cartDTO.getUserId()); // Is this something I should instantly put in setUser()?
         Product product = productRepository.findProductById(cartDTO.getProductId());
         Cart cart = new Cart();
         cart.setUser(user);
@@ -41,6 +41,7 @@ public class CartServiceImpl implements CartService {
     public ResponseEntity<Cart> createCart(CartDTO cartDTO) {
         if (!userRepository.existsUserById(cartDTO.getUserId())
                 || !productRepository.existsProductById(cartDTO.getProductId())) {
+            // TODO: Use builder, instead of body(null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
         Cart cart = createCartEntityFromDTO(cartDTO);
@@ -48,6 +49,7 @@ public class CartServiceImpl implements CartService {
         return ResponseEntity.status(HttpStatus.CREATED).body(cart);
     }
 
+    // TODO: Use ResponseEntity<Void>, instead of raw values
     @Override
     public ResponseEntity deleteCart(String userId) {
         if (!cartRepository.existsCartByUserId(userId)) {
@@ -57,6 +59,7 @@ public class CartServiceImpl implements CartService {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    // TODO: Use ResponseEntity<Void>, instead of raw values
     @Override
     public ResponseEntity deleteCartItem(CartDTO cartDTO) {
         if (!cartRepository.existsCartByUserIdAndProductId(cartDTO.getUserId(), cartDTO.getProductId())) {
@@ -70,6 +73,7 @@ public class CartServiceImpl implements CartService {
         List<Cart> cartList = cartRepository.findAllByUserId(userId);
         return cartList
                 .stream()
+                // TODO: This can be replaced with method reference (check warning)
                 .map(cartItem -> cartItem.getProduct())
                 .toList();
     }
@@ -87,6 +91,7 @@ public class CartServiceImpl implements CartService {
         List<Product> cartProducts = getCartProductsListByUser(userId);
         return cartProducts
                 .stream()
+                // TODO: This can be replaced with method reference (check warning)
                 .mapToDouble(productItem -> productItem.getPrice())
                 .sum();
     }
@@ -119,6 +124,9 @@ public class CartServiceImpl implements CartService {
         }
         reduceUserCredits(user, totalCost);
         reduceProductStock(userId);
+        // TODO: I believe that calling a method that has actually been created to be called from the Controller is a bad idea
+        // TODO: I would extract the logic that I need in another method, and call that from both deleteCart() and checkoutBalance()
+        // TODO: Response entities bodies is not something that a user sees, so there is no need to make it look so "nice". Typically its status updates (you can include numbers like the remaining credits), or resources (like entities of the database).
         deleteCart(userId);
         return ResponseEntity.status(HttpStatus.OK).body("Checkout successfully made! Your remained credits are now "
                 + user.getCredits() + " :)");
