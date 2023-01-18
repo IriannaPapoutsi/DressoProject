@@ -29,6 +29,7 @@ public class CartServiceImpl implements CartService {
     }
 
     Cart createCartEntity(int userId, int productId) {
+        // TODO: Take the Optional<> objects on createCartProduct() method and use their .isPresent() method instead of using the repository to check if the entities exist
         Optional<User> userResponse = userRepository.findById(userId); // Is this something I should instantly put in setUser()?
         User user = userResponse.get();
         Optional<Product> productResponse = productRepository.findById(productId);
@@ -41,6 +42,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public ResponseEntity<Cart> createCartProduct(int userId, int productId) {
+        // TODO: Store the boolean check in a variable to make your purpose clear
         if (!userRepository.existsById(userId)
                 || !productRepository.existsById(productId)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -55,6 +57,8 @@ public class CartServiceImpl implements CartService {
         return implementCartDeletion(userId);
     }
 
+    // TODO: I would place this method above deleteCart() which uses it, for better readability
+    // TODO: I would rename this method to something like: clearUserCart(..)
     private ResponseEntity<Void> implementCartDeletion(int userId) {
         if (!cartRepository.existsCartByUserId(userId)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -91,6 +95,7 @@ public class CartServiceImpl implements CartService {
     }
 
     double calculateCartCost(int userId) {
+        // TODO: Very nice usage of streams, good job :D!
         List<Product> cartProducts = getCartProductsListByUser(userId);
         return cartProducts
                 .stream()
@@ -114,6 +119,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public ResponseEntity<String> checkoutBalance(int userId) {
+        // TODO: Get the userResponse here and use isPresent() to check for existence, isntead of repository
         if (!userRepository.existsById(userId)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }

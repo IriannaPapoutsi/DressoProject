@@ -30,6 +30,7 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
     }
 
     public FavoriteProduct createFavoriteProductEntity(int userId, int productId) {
+        // TODO: Try getting the user and product optionals on the createFavoriteProduct(), so that you also use optional.isPresent() method to check if the entities exist, instead of using the repository
         FavoriteProduct favoriteProduct = new FavoriteProduct();
         Optional<User> userResponse = userRepository.findById(userId);
         User user = userResponse.get();
@@ -42,14 +43,17 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
 
     @Override
     public ResponseEntity<FavoriteProduct> createFavoriteProduct(int userId, int productId) {
+        // TODO: Again, please store complex boolean checks into variables to make your goal clear
+        // TODO: e.g. boolean shouldCreateFavorite = ....
         if (userRepository.existsById(userId)
                 && productRepository.existsById(productId)
                 && !favoriteProductRepository.existsFavoriteProductByUserIdAndProductId(userId, productId)) {
             FavoriteProduct favoriteProduct = createFavoriteProductEntity(userId, productId);
             favoriteProductRepository.save(favoriteProduct);
             return ResponseEntity.status(HttpStatus.CREATED).body(favoriteProduct);
-
         }
+        // TODO: What happens if the above are not true? A conflict will be thrown if the user / product does not exist which is not true
+        // TODO: You might want to break them down into two booleans -> boolean userAndProductExist = ... and boolean favoriteAlreadyExists = ... and then work properly
         return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 
@@ -64,8 +68,10 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
+    // TODO: I would change the name of this method to something like getUserFavoriteProducts(...), currently the name is not that clear
     List<Product> getProductObjectList(int userId) {
         List<FavoriteProduct> favoriteProductList = favoriteProductRepository.findAllByUserId(userId);
+        // TODO: Nice usage of streams here, good job!
         return favoriteProductList
                 .stream()
                 .map(FavoriteProduct::getProduct)
@@ -74,6 +80,7 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
 
     @Override
     public ResponseEntity<List<Product>> getFavoriteProductsByUser(int userId) {
+        // TODO: Here you do not need to check if favorites exist. If they do not exist, an empty list will be returned, which is okay.
         if (!favoriteProductRepository.existsFavoriteProductByUserId(userId)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }

@@ -83,11 +83,13 @@ public class UserController {
         return cartService.createCartProduct(userId, productId);
     }
 
+    // TODO: You should delete the extra "/" after cart-products on @DeleteMapping
     @DeleteMapping("/{userId}/cart-products/")
     public ResponseEntity<Void> deleteWholeUserCart(@PathVariable int userId) {
         return cartService.deleteCart(userId);
     }
 
+    // TODO: Fix typo "producId"
     @DeleteMapping("/{userId}/cart-products/{producId}")
     public ResponseEntity<String> deleteProductFromCart(@PathVariable int userId, @PathVariable int producId) {
         return cartService.deleteCartItem(userId, producId);

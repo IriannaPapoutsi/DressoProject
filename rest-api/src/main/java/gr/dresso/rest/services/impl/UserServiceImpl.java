@@ -37,6 +37,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<User> getUser(int userId) {
+        // TODO: Here you do not need to call existsById()
+        // TODO: Below, you are using findById which returns an Optional (meaning that it can be empty if the user does not exist)
+        // TODO: You can get the optional first and call if (!userResponse.isPresent()) to see if the user exists
         if (!userRepository.existsById(userId)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
@@ -68,6 +71,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<User> createUser(CreateUserDTO createUserDTO) {
+        // TODO: Maybe the if statement below should return 409 Conflict?
+        // TODO: Generally it's a good idea to store validations into boolean variables with a name so that your goal is clearer to someone else who is reading the code
+        // TODO: e.g. boolean shouldNotCreateAccount = userRepository.existsUserByEmail(createUserDTO.getEmail()) || userLoginRepository.existsUserLoginByUsername(createUserDTO.getUsername())
+        // TODO: Then you can use the above in the if statement
         if (userRepository.existsUserByEmail(createUserDTO.getEmail()) ||
                 userLoginRepository.existsUserLoginByUsername(createUserDTO.getUsername())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -81,7 +88,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<Void> checkUserLogin(UserLoginDTO userLoginDTO) {
-        if (userLoginRepository.existsUserLoginByUsernameAndPassword(userLoginDTO.getUsername(), userLoginDTO.getPassword())) {
+        if (userLoginRepository.existsUserLoginByUsernameAndPassword(userLoginDTO.getUsername(),
+                userLoginDTO.getPassword())) {
             return ResponseEntity.status(HttpStatus.OK).build();
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -92,6 +100,7 @@ public class UserServiceImpl implements UserService {
         if (!userRepository.existsById(userId)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+        // TODO: Here you do not need the userResponse variable, you do not use it anywhere
         Optional<User> userResponse = userRepository.findById(userId);
         User user = userResponse.get();
         userRepository.deleteById(userId);
@@ -138,6 +147,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<User> updateUser(UpdateUserDTO updateUserDTO, int userId) {
+        // TODO: As I've mentioned on another TODO, you do not need to use the repository here,
+        //  you can use the optional.isPresent() method by getting the user optional here instead of inside updateUserEntityFromDTO()
         if (!userRepository.existsById(userId)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
