@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-// TODO: @Data should not be used with Hibernate / JPA entities (Check warning and look it up)
 @Entity
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,7 +20,7 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
-    private String id;
+    private int id;
 
     @Column(name = "name")
     private String name;
@@ -55,5 +55,5 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<Cart> cart;
-    // TODO: Newline here
+
 }

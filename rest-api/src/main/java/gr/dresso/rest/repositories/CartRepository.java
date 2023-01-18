@@ -8,9 +8,9 @@ import java.util.List;
 
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Integer> {
-    boolean existsCartByUserIdAndProductId(String userId, String productId);
-    boolean existsCartByUserId(String userId);
-    void deleteCartByUserIdAndProductId(String userId, String productId);
-    void deleteCartByUserId(String userId);
-    List<Cart> findAllByUserId(String userId);
+    boolean existsCartByUserIdAndProductId(int userId, int productId);
+    boolean existsCartByUserId(int userId);
+    void deleteCartByUserIdAndProductId(int userId, int productId);
+    void deleteCartByUserId(int userId);
+    List<Cart> findAllByUserId(int userId);
 }

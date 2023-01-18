@@ -1,15 +1,13 @@
 package gr.dresso.rest.entities;
 
 import jakarta.persistence.*;
-// TODO: Remove unused imports
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-// TODO: @Data should not be used with Hibernate / JPA entities (Check warning and look it up)
 @Entity
+@Getter
+@Setter
 @Table(name = "Cart")
-@Data
 public class Cart {
 
     @Id
@@ -24,4 +22,5 @@ public class Cart {
     @ManyToOne
     @JoinColumn(name = "productID")
     private Product product;
+
 }

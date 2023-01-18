@@ -13,7 +13,7 @@ import java.util.List;
 @Transactional
 public interface UserService {
     List<User> getAllUsers();
-    ResponseEntity<User> getUser(String userId);
+    ResponseEntity<User> getUser(int userId);
     /**
      * Method responsible for transforming a Data Transfer Object to actual user related entities and then
      * persisting them to the database.
@@ -29,6 +29,6 @@ public interface UserService {
      */
     ResponseEntity<Void> checkUserLogin(UserLoginDTO userLoginDTO);
 
-    ResponseEntity<User> deleteUserById(String userId);
-    ResponseEntity<User> updateUser(UpdateUserDTO updateUserDTO, String userId);
+    ResponseEntity<String> deleteUserById(int userId);
+    ResponseEntity<User> updateUser(UpdateUserDTO updateUserDTO, int userId);
 }

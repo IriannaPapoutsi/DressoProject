@@ -20,16 +20,31 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> getAllProducts(){
         return productRepository.findAll();
     }
-    @Override
-    public List<Product> getAllProductsByName(String name) {
-        return productRepository.findAllByName(name);
+
+    private List<Product> getAllProductsByName(String name) {
+        return productRepository.findAllByNameContains(name);
+    }
+    private List<Product> getAllProductsByCategoryName(String categoryName) {
+        return productRepository.findAllByCategoryNameContains(categoryName);
+    }
+
+    private List<Product> getAllProductsByNameAndCategoryName(String name, String category){
+        return productRepository.findAllByNameContainsAndCategoryNameContains(name, category);
     }
     @Override
-    public List<Product> getAllProductsByCategoryName(String categoryName) {
-        return productRepository.findAllByCategoryName(categoryName);
+    public List<Product> getAllProductsBasedOnParams(String name, String category) {
+        if (name != null && category != null) {
+            return getAllProductsByNameAndCategoryName(name, category);
+        }
+        else if (name != null) {
+            return getAllProductsByName(name);
+        }
+        else if (category != null) {
+            return getAllProductsByCategoryName(category);
+        }
+        else {
+            return getAllProducts();
+        }
     }
-    @Override
-    public List<Product> getAllProductsByNameAndCategoryName(String name, String category){
-        return productRepository.findAllByNameAndCategoryName(name, category);
-    }
+
 }

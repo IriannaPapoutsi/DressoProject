@@ -1,8 +1,8 @@
 package gr.dresso.rest.services.impl;
 
-import gr.dresso.rest.dto.FavoriteProductDTO;
 import gr.dresso.rest.entities.FavoriteProduct;
 import gr.dresso.rest.entities.Product;
+import gr.dresso.rest.entities.User;
 import gr.dresso.rest.repositories.FavoriteProductRepository;
 import gr.dresso.rest.repositories.ProductRepository;
 import gr.dresso.rest.repositories.UserRepository;
@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FavoriteProductServiceImpl implements FavoriteProductService {
@@ -28,47 +29,51 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
         this.favoriteProductRepository = favoriteProductRepository;
     }
 
-    public FavoriteProduct createFavoriteProductEntityFromDTO(FavoriteProductDTO favoriteProductDTO) {
+    public FavoriteProduct createFavoriteProductEntity(int userId, int productId) {
         FavoriteProduct favoriteProduct = new FavoriteProduct();
-        favoriteProduct.setUser(userRepository.findUserById(favoriteProductDTO.getUserId()));
-        favoriteProduct.setProduct(productRepository.findProductById(favoriteProductDTO.getProductId()));
+        Optional<User> userResponse = userRepository.findById(userId);
+        User user = userResponse.get();
+        favoriteProduct.setUser(user);
+        Optional<Product> productResponse = productRepository.findById(productId);
+        Product product = productResponse.get();
+        favoriteProduct.setProduct(product);
         return favoriteProduct;
     }
 
     @Override
-    public ResponseEntity<FavoriteProduct> createFavoriteProduct(FavoriteProductDTO favoriteProductDTO) {
-        if (userRepository.existsUserById(favoriteProductDTO.getUserId())
-                && productRepository.existsProductById(favoriteProductDTO.getProductId())) {
-            FavoriteProduct favoriteProduct = createFavoriteProductEntityFromDTO(favoriteProductDTO);
+    public ResponseEntity<FavoriteProduct> createFavoriteProduct(int userId, int productId) {
+        if (userRepository.existsById(userId)
+                && productRepository.existsById(productId)
+                && !favoriteProductRepository.existsFavoriteProductByUserIdAndProductId(userId, productId)) {
+            FavoriteProduct favoriteProduct = createFavoriteProductEntity(userId, productId);
             favoriteProductRepository.save(favoriteProduct);
             return ResponseEntity.status(HttpStatus.CREATED).body(favoriteProduct);
 
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 
-    // TODO: Use ResponseEntity<Void>, instead of raw values
     @Override
-    public ResponseEntity deleteFavoriteProduct(FavoriteProductDTO favoriteProductDTO) {
-        // TODO: Lines are too long
-        if (favoriteProductRepository.existsFavoriteProductByUserIdAndProductId(favoriteProductDTO.getUserId(), favoriteProductDTO.getProductId())) {
-            favoriteProductRepository.deleteFavoriteProductByUserIdAndProductId(favoriteProductDTO.getUserId(), favoriteProductDTO.getProductId());
-            return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<String> deleteFavoriteProduct(int userId, int productId) {
+        if (favoriteProductRepository
+                .existsFavoriteProductByUserIdAndProductId(userId, productId)) {
+            favoriteProductRepository
+                    .deleteFavoriteProductByUserIdAndProductId(userId, productId);
+            return ResponseEntity.status(HttpStatus.OK).body("Favorite Product successfully deleted!");
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    List<Product> getProductObjectList(String userId) {
+    List<Product> getProductObjectList(int userId) {
         List<FavoriteProduct> favoriteProductList = favoriteProductRepository.findAllByUserId(userId);
         return favoriteProductList
                 .stream()
-                // TODO: Method reference may be used, check warning
-                .map(x -> x.getProduct())
+                .map(FavoriteProduct::getProduct)
                 .toList();
     }
 
     @Override
-    public ResponseEntity<List<Product>> getFavoriteProductsByUser(String userId) {
+    public ResponseEntity<List<Product>> getFavoriteProductsByUser(int userId) {
         if (!favoriteProductRepository.existsFavoriteProductByUserId(userId)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }

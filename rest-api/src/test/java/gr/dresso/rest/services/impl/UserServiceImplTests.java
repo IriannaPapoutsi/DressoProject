@@ -12,9 +12,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.util.AssertionErrors.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceImplTests {
@@ -70,7 +72,7 @@ public class UserServiceImplTests {
         User actualUser = userService.createUserEntityFromDTO(createUserDTO);
 
         // Then
-        assertEquals("createUserEntityFromDTO() should return User Object", expectedUser, actualUser);
+        assertThat(actualUser).usingRecursiveComparison().isEqualTo(expectedUser);
     }
 
     @Test
@@ -109,13 +111,13 @@ public class UserServiceImplTests {
         UserLogin actualUserLogin = userService.createUserLoginEntityFromDTO(user, createUserDTO);
 
         // Then
-        assertEquals("createUserLoginEntityFromDTO() should return created UserLogin Object", expectedUserLogin, actualUserLogin);
+        assertThat(actualUserLogin).usingRecursiveComparison().isEqualTo(expectedUserLogin);
     }
 
     @Test
     public void updateUserEntityFromDTO_shouldReturnUpdateUserObject() {
         // Given
-        String userId = "1";
+        int userId = 1;
         User existedUserInDB = User.builder()
                 .firstName("Irianna")
                 .lastName("Papoutsi")
@@ -142,13 +144,13 @@ public class UserServiceImplTests {
                 .email("iriannapapoutsi@gmail.com")
                 .credits(50.0)
                 .build();
-        when(userRepository.findUserById("1")).thenReturn(existedUserInDB);
+        when(userRepository.findById(1)).thenReturn(Optional.of(existedUserInDB));
 
         // When
         User actualUpdateUser = userService.updateUserEntityFromDTO(updateUserDTO, userId);
 
         // Then
-        assertEquals("updateUserEntityFromDTO() should update specific user field", expectedUpdatedUser, actualUpdateUser);
+        assertThat(actualUpdateUser).usingRecursiveComparison().isEqualTo(expectedUpdatedUser);
     }
 
     @Test
@@ -178,7 +180,7 @@ public class UserServiceImplTests {
         UserLogin actualUpdateUserLogin = userService.updateUserLoginEntityFromDTO(existedUserInDB, updateUserDTO);
 
         // Then
-        assertEquals("updateUserEntityFromDTO() should update specific user field", expectedUserLoginInDB, actualUpdateUserLogin);
+        assertThat(actualUpdateUserLogin).usingRecursiveComparison().isEqualTo(expectedUserLoginInDB);
     }
 
 

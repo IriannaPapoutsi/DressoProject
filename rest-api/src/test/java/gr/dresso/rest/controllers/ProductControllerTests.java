@@ -50,7 +50,7 @@ public class ProductControllerTests {
     @Test
     public void getProductsByName_givenInvalidNameRequestParam_shouldReturnZeroListSize() throws Exception {
         // Given
-        String name = "Mini ";
+        String name = "Something else";
 
         // When
         mockMvc.perform(
@@ -76,9 +76,24 @@ public class ProductControllerTests {
     }
 
     @Test
+    public void getProductsByCategory_givenValidStringsRequestParam_shouldReturnOkStatus() throws Exception {
+        // Given
+        String categoryName = "Co";
+
+        // When
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/api/products?category=" + categoryName)
+                                .contentType(MediaType.APPLICATION_JSON))
+                // Then
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].category.name", Matchers.is("Coat")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(2)));
+    }
+
+    @Test
     public void getProductsByCategory_givenInvalidCategoryRequestParam_shouldReturnZeroListSize() throws Exception {
         // Given
-        String categoryName = "Co"; // No such category name exists
+        String categoryName = "Not a category";
 
         // When
         mockMvc.perform(

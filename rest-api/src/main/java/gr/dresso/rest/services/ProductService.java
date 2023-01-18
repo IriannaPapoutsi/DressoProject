@@ -9,7 +9,5 @@ import java.util.List;
 @Service
 public interface ProductService {
     List<Product> getAllProducts();
-    List<Product> getAllProductsByName(String name);
-    List<Product> getAllProductsByCategoryName(String categoryName);
-    List<Product> getAllProductsByNameAndCategoryName(String name, String category);
+    List<Product> getAllProductsBasedOnParams(String name, String category);
 }

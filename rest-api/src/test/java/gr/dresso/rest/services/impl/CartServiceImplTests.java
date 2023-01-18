@@ -1,6 +1,5 @@
 package gr.dresso.rest.services.impl;
 
-import gr.dresso.rest.dto.CartDTO;
 import gr.dresso.rest.entities.Cart;
 import gr.dresso.rest.entities.Product;
 import gr.dresso.rest.entities.User;
@@ -9,26 +8,21 @@ import gr.dresso.rest.repositories.ProductRepository;
 import gr.dresso.rest.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.anyDouble;
-import static org.mockito.Mockito.verify;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 
 public class CartServiceImplTests {
-
-    private Mock mock;
 
     @Mock
     private UserRepository userRepository;
@@ -44,7 +38,7 @@ public class CartServiceImplTests {
 
     private List<Cart> mockCartList() {
         User user = User.builder()
-                .id("1")
+                .id(1)
                 .firstName("Marianna")
                 .lastName("Papoutsi")
                 .postalCode("IT456")
@@ -55,7 +49,7 @@ public class CartServiceImplTests {
                 .credits(15.0)
                 .build();
         Product product1 = Product.builder()
-                .id("1")
+                .id(1)
                 .name("Satin Dress")
                 .price(134.5)
                 .description("Modern elegant dress for classy night outs!")
@@ -63,7 +57,7 @@ public class CartServiceImplTests {
                 .stock(123)
                 .build();
         Product product2 = Product.builder()
-                .id("2")
+                .id(2)
                 .name("Silk scarf")
                 .price(60.5)
                 .description("Colorful handmade silk scarf for classy night outs!")
@@ -81,7 +75,7 @@ public class CartServiceImplTests {
 
     private List<Product> mockProductList() {
         Product product1 = Product.builder()
-                .id("1")
+                .id(1)
                 .name("Satin Dress")
                 .price(134.5)
                 .description("Modern elegant dress for classy night outs!")
@@ -89,7 +83,7 @@ public class CartServiceImplTests {
                 .stock(123)
                 .build();
         Product product2 = Product.builder()
-                .id("2")
+                .id(2)
                 .name("Silk scarf")
                 .price(60.5)
                 .description("Colorful handmade silk scarf for classy night outs!")
@@ -100,11 +94,12 @@ public class CartServiceImplTests {
     }
 
     @Test
-    public void createCartEntityFromDTO_shouldReturnCreatedCartObject() {
+    public void createCartEntity_shouldReturnCreatedCartObject() {
         // Given
-        String userId = "1";
+        int userId = 1;
+        int productId = 1;
         User user = User.builder()
-                .id("1")
+                .id(1)
                 .firstName("Marianna")
                 .lastName("Papoutsi")
                 .postalCode("IT456")
@@ -115,33 +110,32 @@ public class CartServiceImplTests {
                 .credits(15.0)
                 .build();
         Product product = Product.builder()
-                .id("1")
+                .id(1)
                 .name("Satin Dress")
                 .price(134.5)
                 .description("Modern elegant dress for classy night outs!")
                 .sku("gyht78")
                 .stock(123)
                 .build();
-        when(userRepository.findUserById("1")).thenReturn(user);
-        when(productRepository.findProductById("1")).thenReturn(product);
-        CartDTO cartDTO = new CartDTO("1", "1");
+        when(userRepository.findById(1)).thenReturn(Optional.of(user));
+        when(productRepository.findById(1)).thenReturn(Optional.of(product));
         Cart expectedCart = new Cart();
         expectedCart.setUser(user);
         expectedCart.setProduct(product);
 
         // When
-        Cart actualCart = cartService.createCartEntityFromDTO(cartDTO);
+        Cart actualCart = cartService.createCartEntity(userId, productId);
 
         // Then
-        assertEquals("createCartEntityFromDTO() should return the created cart object", expectedCart, actualCart);
+        assertThat(actualCart).usingRecursiveComparison().isEqualTo(expectedCart);
     }
 
     @Test
     public void getCartProductsListByUser_shouldReturnOnlyProductsOfUser() {
         // Given
-        String userId = "1";
+        int userId = 1;
         List<Cart> cartList = mockCartList();
-        when(cartRepository.findAllByUserId("1")).thenReturn(cartList);
+        when(cartRepository.findAllByUserId(1)).thenReturn(cartList);
 
         List<Product> expectedProductList = mockProductList();
 
@@ -149,15 +143,15 @@ public class CartServiceImplTests {
         List<Product> actualProductList = cartService.getCartProductsListByUser(userId);
 
         // Then
-        assertEquals("getCartProductsListByUser() should return only the product objects of the whole cart list", expectedProductList, actualProductList);
+        assertThat(actualProductList).usingRecursiveComparison().isEqualTo(expectedProductList);
     }
 
     @Test
     public void calculateCartCost_shouldReturnTheTotalCostOfCart() {
         // Given
-        String userId = "1";
+        int userId = 1;
         List<Cart> cartList = mockCartList();
-        when(cartRepository.findAllByUserId("1")).thenReturn(cartList);
+        when(cartRepository.findAllByUserId(1)).thenReturn(cartList);
         double expectedCost = 195.0;
 
         // When
@@ -168,12 +162,11 @@ public class CartServiceImplTests {
     }
 
     @Test
-    public void reduceProductStock_shouldReduceProductStockBaseOnCart() {
+    public void reduceProductStock_shouldReduceProductStockBasedOnCartCheckout() {
         // Given
-        String userId = "1";
+        int userId = 1;
         List<Cart> cartList = mockCartList();
-        when(cartRepository.findAllByUserId("1")).thenReturn(cartList);
-        List<Product> productList = mockProductList();
+        when(cartRepository.findAllByUserId(1)).thenReturn(cartList);
         int expectedStockList[] = {122, 79};
 
         // When
@@ -182,14 +175,15 @@ public class CartServiceImplTests {
         cartService.reduceProductStock(userId);
 
         // Then
-        //assertEquals("reduceProductStock() should reduce the stock of a product based on cart", expectedStockList[0], 0) );
+        //assertEquals("reduceProductStock() should reduce the stock of a product based on cart",
+                //expectedStockList, );
     }
 
     @Test
     public void reduceUserCredits() {
         // Given
         User user = User.builder()
-                .id("1")
+                .id(1)
                 .firstName("Marianna")
                 .lastName("Papoutsi")
                 .postalCode("IT456")
@@ -208,6 +202,7 @@ public class CartServiceImplTests {
         cartService.reduceUserCredits(user, totalCost);
 
         // Then
-        assertEquals("reduceUserCredits() should reduce the credits of the user based on total cost", expectedRemainedCredits, user.getCredits());
+        assertEquals("reduceUserCredits() should reduce the credits of the user based on total cost",
+                expectedRemainedCredits, user.getCredits());
     }
 }

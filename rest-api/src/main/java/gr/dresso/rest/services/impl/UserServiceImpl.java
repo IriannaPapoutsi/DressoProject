@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -35,11 +36,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<User> getUser(String userId) {
-        if (!userRepository.existsUserById(userId)) {
+    public ResponseEntity<User> getUser(int userId) {
+        if (!userRepository.existsById(userId)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        User user = userRepository.findUserById(userId);
+        Optional<User> userResponse = userRepository.findById(userId);
+        User user = userResponse.get();
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
@@ -86,17 +88,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<User> deleteUserById(String userId) {
-        if (!userRepository.existsUserById(userId)) {
+    public ResponseEntity<String> deleteUserById(int userId) {
+        if (!userRepository.existsById(userId)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        User user = userRepository.findUserById(userId);
-        userRepository.deleteUserById(userId);
-        return ResponseEntity.status(HttpStatus.OK).body(user);
+        Optional<User> userResponse = userRepository.findById(userId);
+        User user = userResponse.get();
+        userRepository.deleteById(userId);
+        return ResponseEntity.status(HttpStatus.OK).body("User successfully deleted!");
     }
 
-    User updateUserEntityFromDTO(UpdateUserDTO updateUserDTO, String userId) {
-        User user = userRepository.findUserById(userId);
+    User updateUserEntityFromDTO(UpdateUserDTO updateUserDTO, int userId) {
+        Optional<User> userResponse = userRepository.findById(userId);
+        User user = userResponse.get();
         if (updateUserDTO.getFirstName() != null) {
             user.setFirstName(updateUserDTO.getFirstName());
         }
@@ -133,8 +137,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<User> updateUser(UpdateUserDTO updateUserDTO, String userId) {
-        if (!userRepository.existsUserById(userId)) {
+    public ResponseEntity<User> updateUser(UpdateUserDTO updateUserDTO, int userId) {
+        if (!userRepository.existsById(userId)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         User user = updateUserEntityFromDTO(updateUserDTO, userId);

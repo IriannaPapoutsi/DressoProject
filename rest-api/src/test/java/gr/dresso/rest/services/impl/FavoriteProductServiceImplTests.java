@@ -1,6 +1,5 @@
 package gr.dresso.rest.services.impl;
 
-import gr.dresso.rest.dto.FavoriteProductDTO;
 import gr.dresso.rest.entities.FavoriteProduct;
 import gr.dresso.rest.entities.Product;
 import gr.dresso.rest.entities.User;
@@ -14,7 +13,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.util.AssertionErrors.*;
 
@@ -31,11 +32,12 @@ public class FavoriteProductServiceImplTests {
     private FavoriteProductServiceImpl favoriteProductService;
 
     @Test
-    public void createFavoriteProductEntityFromFTO_shouldReturnCreatedFavoriteProductObject() {
+    public void createFavoriteProductEntity_shouldReturnCreatedFavoriteProductObject() {
         // Given
-        FavoriteProductDTO favoriteProductDTO = new FavoriteProductDTO("1", "3");
+        int userId = 1;
+        int productId = 3;
         User user = User.builder()
-                .id("1")
+                .id(1)
                 .firstName("Marianna")
                 .lastName("Papoutsi")
                 .postalCode("IT456")
@@ -46,7 +48,7 @@ public class FavoriteProductServiceImplTests {
                 .credits(15.0)
                 .build();
         Product product = Product.builder()
-                .id("3")
+                .id(3)
                 .name("Satin Dress")
                 .price(134.5)
                 .description("Modern elegant dress for classy night outs!")
@@ -56,22 +58,23 @@ public class FavoriteProductServiceImplTests {
         FavoriteProduct expectedFavoriteProduct = new FavoriteProduct();
         expectedFavoriteProduct.setUser(user);
         expectedFavoriteProduct.setProduct(product);
-        when(userRepository.findUserById("1")).thenReturn(user);
-        when(productRepository.findProductById("3")).thenReturn(product);
+        when(userRepository.findById(1)).thenReturn(Optional.of(user));
+        when(productRepository.findById(3)).thenReturn(Optional.of(product));
 
         // When
-        FavoriteProduct actualFavoriteProduct = favoriteProductService.createFavoriteProductEntityFromDTO(favoriteProductDTO);
+        FavoriteProduct actualFavoriteProduct = favoriteProductService.createFavoriteProductEntity(userId, productId);
 
         // Then
-        assertEquals("createFavoriteProductEntityFromDTO() should return the created favorite product",expectedFavoriteProduct, actualFavoriteProduct);
+        assertThat(actualFavoriteProduct).usingRecursiveComparison().isEqualTo(expectedFavoriteProduct);
+
     }
 
     @Test
-    public void getProductObjectList_shouldReturnOnlyProductsObjecsFromFavoriteProductsList() {
+    public void getProductObjectList_shouldReturnOnlyProductsObjectsFromFavoriteProductsList() {
         // Given
-        String userId = "1";
+        int userId = 1;
         User user = User.builder()
-                .id("1")
+                .id(1)
                 .firstName("Marianna")
                 .lastName("Papoutsi")
                 .postalCode("IT456")
@@ -82,7 +85,7 @@ public class FavoriteProductServiceImplTests {
                 .credits(15.0)
                 .build();
         Product product1 = Product.builder()
-                .id("1")
+                .id(1)
                 .name("Satin Dress")
                 .price(134.5)
                 .description("Modern elegant dress for classy night outs!")
@@ -90,7 +93,7 @@ public class FavoriteProductServiceImplTests {
                 .stock(123)
                 .build();
         Product product2 = Product.builder()
-                .id("2")
+                .id(2)
                 .name("Silk scarf")
                 .price(60.5)
                 .description("Colorful handmade silk scarf for classy night outs!")
@@ -104,7 +107,7 @@ public class FavoriteProductServiceImplTests {
         favoriteProduct2.setUser(user);
         favoriteProduct2.setProduct(product2);
         List<FavoriteProduct> favoriteProductList = List.of(favoriteProduct1, favoriteProduct2);
-        when(favoriteProductRepository.findAllByUserId("1")).thenReturn(favoriteProductList);
+        when(favoriteProductRepository.findAllByUserId(1)).thenReturn(favoriteProductList);
 
         List<Product> expectedProductList = List.of(product1,product2);
 
@@ -112,7 +115,8 @@ public class FavoriteProductServiceImplTests {
         List<Product> actualFavoriteProductList = favoriteProductService.getProductObjectList(userId);
 
         // Then
-        assertEquals("getProductObjectList() should return only the product objects of the whole list", expectedProductList, actualFavoriteProductList);
+        assertEquals("getProductObjectList() should return only the product objects of the whole list",
+                expectedProductList, actualFavoriteProductList);
 
     }
 }

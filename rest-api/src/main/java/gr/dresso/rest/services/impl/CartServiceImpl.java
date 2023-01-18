@@ -1,6 +1,5 @@
 package gr.dresso.rest.services.impl;
 
-import gr.dresso.rest.dto.CartDTO;
 import gr.dresso.rest.entities.Cart;
 import gr.dresso.rest.entities.Product;
 import gr.dresso.rest.entities.User;
@@ -14,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CartServiceImpl implements CartService {
@@ -28,9 +28,11 @@ public class CartServiceImpl implements CartService {
         this.cartRepository = cartRepository;
     }
 
-    Cart createCartEntityFromDTO(CartDTO cartDTO) {
-        User user = userRepository.findUserById(cartDTO.getUserId()); // Is this something I should instantly put in setUser()?
-        Product product = productRepository.findProductById(cartDTO.getProductId());
+    Cart createCartEntity(int userId, int productId) {
+        Optional<User> userResponse = userRepository.findById(userId); // Is this something I should instantly put in setUser()?
+        User user = userResponse.get();
+        Optional<Product> productResponse = productRepository.findById(productId);
+        Product product = productResponse.get();
         Cart cart = new Cart();
         cart.setUser(user);
         cart.setProduct(product);
@@ -38,20 +40,22 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public ResponseEntity<Cart> createCart(CartDTO cartDTO) {
-        if (!userRepository.existsUserById(cartDTO.getUserId())
-                || !productRepository.existsProductById(cartDTO.getProductId())) {
-            // TODO: Use builder, instead of body(null)
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+    public ResponseEntity<Cart> createCartProduct(int userId, int productId) {
+        if (!userRepository.existsById(userId)
+                || !productRepository.existsById(productId)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-        Cart cart = createCartEntityFromDTO(cartDTO);
+        Cart cart = createCartEntity(userId, productId);
         cartRepository.save(cart);
         return ResponseEntity.status(HttpStatus.CREATED).body(cart);
     }
 
-    // TODO: Use ResponseEntity<Void>, instead of raw values
     @Override
-    public ResponseEntity deleteCart(String userId) {
+    public ResponseEntity<Void> deleteCart(int userId) {
+        return implementCartDeletion(userId);
+    }
+
+    private ResponseEntity<Void> implementCartDeletion(int userId) {
         if (!cartRepository.existsCartByUserId(userId)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
@@ -59,44 +63,42 @@ public class CartServiceImpl implements CartService {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    // TODO: Use ResponseEntity<Void>, instead of raw values
     @Override
-    public ResponseEntity deleteCartItem(CartDTO cartDTO) {
-        if (!cartRepository.existsCartByUserIdAndProductId(cartDTO.getUserId(), cartDTO.getProductId())) {
+    public ResponseEntity<String> deleteCartItem(int userId, int productId) {
+        if (!cartRepository.existsCartByUserIdAndProductId(userId, productId)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        cartRepository.deleteCartByUserIdAndProductId(cartDTO.getUserId(), cartDTO.getProductId());
-        return ResponseEntity.status(HttpStatus.OK).build();
+        cartRepository.deleteCartByUserIdAndProductId(userId, productId);
+        return ResponseEntity.status(HttpStatus.OK).body("Deleted cart item with user id: "
+                + userId + " and product id: " + productId);
     }
 
-    List<Product> getCartProductsListByUser(String userId) {
+    List<Product> getCartProductsListByUser(int userId) {
         List<Cart> cartList = cartRepository.findAllByUserId(userId);
         return cartList
                 .stream()
-                // TODO: This can be replaced with method reference (check warning)
-                .map(cartItem -> cartItem.getProduct())
+                .map(Cart::getProduct)
                 .toList();
     }
 
     @Override
-    public ResponseEntity<List<Product>> getCartByUserId(String userId) {
-        if (!userRepository.existsUserById(userId)) {
+    public ResponseEntity<List<Product>> getCartByUserId(int userId) {
+        if (!userRepository.existsById(userId)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         List<Product> cartProductList = getCartProductsListByUser(userId);
         return ResponseEntity.status(HttpStatus.OK).body(cartProductList);
     }
 
-    double calculateCartCost(String userId) {
+    double calculateCartCost(int userId) {
         List<Product> cartProducts = getCartProductsListByUser(userId);
         return cartProducts
                 .stream()
-                // TODO: This can be replaced with method reference (check warning)
-                .mapToDouble(productItem -> productItem.getPrice())
+                .mapToDouble(Product::getPrice)
                 .sum();
     }
 
-    void reduceProductStock(String userId) {
+    void reduceProductStock(int userId) {
         List<Product> cartProductList = getCartProductsListByUser(userId);
         cartProductList.forEach(x -> {
             x.setStock(x.getStock() - 1);
@@ -111,24 +113,22 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public ResponseEntity<String> checkoutBalance(String userId) {
-        if (!userRepository.existsUserById(userId)) {
+    public ResponseEntity<String> checkoutBalance(int userId) {
+        if (!userRepository.existsById(userId)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         double totalCost = calculateCartCost(userId);
-        User user = userRepository.findUserById(userId);
+        Optional<User> userResponse = userRepository.findById(userId);
+        User user = userResponse.get();
         double credits = user.getCredits();
         if (credits < totalCost) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Sorry, total cost is " + totalCost
-                    + " and you only have " + credits + " credits :/");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Total cost: " + totalCost
+                    + " user credits: " + credits);
         }
         reduceUserCredits(user, totalCost);
         reduceProductStock(userId);
-        // TODO: I believe that calling a method that has actually been created to be called from the Controller is a bad idea
-        // TODO: I would extract the logic that I need in another method, and call that from both deleteCart() and checkoutBalance()
-        // TODO: Response entities bodies is not something that a user sees, so there is no need to make it look so "nice". Typically its status updates (you can include numbers like the remaining credits), or resources (like entities of the database).
-        deleteCart(userId);
-        return ResponseEntity.status(HttpStatus.OK).body("Checkout successfully made! Your remained credits are now "
-                + user.getCredits() + " :)");
+        implementCartDeletion(userId);
+        return ResponseEntity.status(HttpStatus.OK).body("User credits left: "
+                + user.getCredits());
     }
 }

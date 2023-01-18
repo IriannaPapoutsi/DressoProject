@@ -8,8 +8,8 @@ import java.util.List;
 
 @Repository
 public interface FavoriteProductRepository extends JpaRepository<FavoriteProduct, Integer>{
-    boolean existsFavoriteProductByUserId(String userId);
-    boolean existsFavoriteProductByUserIdAndProductId(String userId, String productId);
-    void deleteFavoriteProductByUserIdAndProductId(String userId, String productId);
-    List<FavoriteProduct> findAllByUserId(String userId);
+    boolean existsFavoriteProductByUserId(int userId);
+    boolean existsFavoriteProductByUserIdAndProductId(int userId, int productId);
+    void deleteFavoriteProductByUserIdAndProductId(int userId, int productId);
+    List<FavoriteProduct> findAllByUserId(int userId);
 }

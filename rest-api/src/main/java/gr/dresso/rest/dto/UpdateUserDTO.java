@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateUserDTO {
-    // TODO: Newline here
+
     private String firstName;
 
     private String lastName;
@@ -34,5 +34,5 @@ public class UpdateUserDTO {
 
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$")
     private String password;
-    // TODO: Newline here
+
 }

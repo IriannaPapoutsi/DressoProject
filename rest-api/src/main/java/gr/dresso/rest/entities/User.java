@@ -6,19 +6,19 @@ import lombok.*;
 
 import java.util.Set;
 
-// TODO: @Data should not be used with Hibernate / JPA entities (Check warning and look it up)
 @Entity
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name="User")
 public class User {
-    // TODO: Newline here
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
-    private String id;
+    private int id;
 
     @Column(name = "firstName")
     private String firstName;
@@ -54,5 +54,5 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<Cart> cart;
-    // TODO: Newline here
+
 }

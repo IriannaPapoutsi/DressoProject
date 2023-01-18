@@ -3,9 +3,9 @@ package gr.dresso.rest.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-// TODO: @Data should not be used with Hibernate / JPA entities (Check warning and look it up)
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "Category")
 public class Category {
 
@@ -16,4 +16,5 @@ public class Category {
 
     @Column(name = "name")
     private String name;
+
 }

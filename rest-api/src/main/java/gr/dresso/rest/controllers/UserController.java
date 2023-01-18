@@ -3,7 +3,12 @@ package gr.dresso.rest.controllers;
 import gr.dresso.rest.dto.CreateUserDTO;
 import gr.dresso.rest.dto.UpdateUserDTO;
 import gr.dresso.rest.dto.UserLoginDTO;
+import gr.dresso.rest.entities.Cart;
+import gr.dresso.rest.entities.FavoriteProduct;
+import gr.dresso.rest.entities.Product;
 import gr.dresso.rest.entities.User;
+import gr.dresso.rest.services.CartService;
+import gr.dresso.rest.services.FavoriteProductService;
 import gr.dresso.rest.services.UserService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -17,23 +22,23 @@ import java.util.List;
 @Transactional
 @RequestMapping("/api/users")
 public class UserController {
-    // TODO: Newline here
+
     private final UserService userService;
-    // TODO: Newline here
+    private final FavoriteProductService favoriteProductService;
+    private final CartService cartService;
+
     @Autowired
-    public UserController(UserService userService){
+    public UserController(UserService userService, FavoriteProductService favoriteProductService, CartService cartService){
         this.userService = userService;
+        this.favoriteProductService = favoriteProductService;
+        this.cartService = cartService;
     }
 
     @GetMapping
     public List<User> getAllUsers() { return userService.getAllUsers(); }
 
-    // TODO: Endpoint names should not use the same term twice and with different tenses (singular / plural)
-    // TODO: For this kind of cause, you also should NOT use a Request Parameter (that is used for searching / filtering mostly)
-    // TODO: A good design would be to get a specific user via an endpoint like: /api/users/5 -> 5 here is the id of the user
-    // TODO: This is called path variable, check how it is implemented with Spring Boot
-    @GetMapping("/user")
-    public ResponseEntity<User> getUser(@RequestParam String userId) {
+    @GetMapping("/{userId}")
+    public ResponseEntity<User> getUser(@PathVariable int userId) {
         return userService.getUser(userId);
     }
 
@@ -47,23 +52,55 @@ public class UserController {
         return userService.checkUserLogin(userLoginDTO);
     }
 
-    // TODO: Similarly to before, the user id here should be part of the path (Path Variable), not a request parameter
-    // TODO: e.g. /api/v1/users/3
-    // TODO: This endpoint is broken because you use @Data on JPA entities. If you open the JPA entities, you will see a warning.
-    // TODO: To fix this, use @Getter and @Setter, instead of @Data which creates a problematic equals() / hashcode()
-    // TODO: Also, for Delete endpoints, people typically return only the status code (or a status message as the body, but not the whole resource).
-    // TODO: The above is not a strict rule, but you may want to follow it
-    @DeleteMapping
-    public ResponseEntity<User> deleteUserByUserId(@RequestParam String userId) {
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<String> deleteUserByUserId(@PathVariable int userId) {
         return userService.deleteUserById(userId);
     }
 
-    // TODO: Again, the design of the endpoint could be improved
-    // TODO: Use something similar to before, e.g. /api/v1/users/3
-    // TODO: Also, the next line is too long
-    @PutMapping
-    public ResponseEntity<User> updateUserProfile(@Valid @RequestBody UpdateUserDTO updateUserDTO, @RequestParam String userId) {
+    @PutMapping("/{userId}")
+    public ResponseEntity<User> updateUserProfile(@Valid @RequestBody UpdateUserDTO updateUserDTO,
+                                                  @PathVariable int userId) {
         return userService.updateUser(updateUserDTO, userId);
+    }
+
+    @GetMapping("/{userId}/favorite-products")
+    public ResponseEntity<List<Product>> getAllFavoriteProductsByUserId(@PathVariable int userId) {
+        return favoriteProductService.getFavoriteProductsByUser(userId);
+    }
+
+    @PostMapping("/{userId}/favorite-products/{productId}")
+    public ResponseEntity<FavoriteProduct> createFavoriteProduct(@PathVariable int userId, @PathVariable int productId) {
+        return favoriteProductService.createFavoriteProduct(userId, productId);
+    }
+
+    @DeleteMapping("/{userId}/favorite-products/{productId}")
+    public ResponseEntity<String> deleteFavoriteProduct(@PathVariable int userId, @PathVariable int productId) {
+        return favoriteProductService.deleteFavoriteProduct(userId, productId);
+    }
+
+    @PostMapping("/{userId}/cart-products/{productId}")
+    public ResponseEntity<Cart> addProductToCart(@PathVariable int userId, @PathVariable int productId) {
+        return cartService.createCartProduct(userId, productId);
+    }
+
+    @DeleteMapping("/{userId}/cart-products/")
+    public ResponseEntity<Void> deleteWholeUserCart(@PathVariable int userId) {
+        return cartService.deleteCart(userId);
+    }
+
+    @DeleteMapping("/{userId}/cart-products/{producId}")
+    public ResponseEntity<String> deleteProductFromCart(@PathVariable int userId, @PathVariable int producId) {
+        return cartService.deleteCartItem(userId, producId);
+    }
+
+    @GetMapping("/{userId}/cart-products")
+    public ResponseEntity<List<Product>> getProductsFromCartByUserId(@PathVariable int userId) {
+        return cartService.getCartByUserId(userId);
+    }
+
+    @PostMapping("{userId}/checkout")
+    public ResponseEntity<String> checkoutBalance(@PathVariable int userId) {
+        return cartService.checkoutBalance(userId);
     }
 
 }
