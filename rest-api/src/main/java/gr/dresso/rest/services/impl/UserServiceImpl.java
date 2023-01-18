@@ -147,7 +147,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<User> updateUser(UpdateUserDTO updateUserDTO, int userId) {
-        // TODO: As I've mentioned on another TODO, you do not need to use the repository here,
+        // TODO: As I've mentioned on another todo, you do not need to use the repository here,
         //  you can use the optional.isPresent() method by getting the user optional here instead of inside updateUserEntityFromDTO()
         if (!userRepository.existsById(userId)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
