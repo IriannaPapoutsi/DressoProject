@@ -58,11 +58,9 @@ public class FavoriteProductServiceImplTests {
         FavoriteProduct expectedFavoriteProduct = new FavoriteProduct();
         expectedFavoriteProduct.setUser(user);
         expectedFavoriteProduct.setProduct(product);
-        when(userRepository.findById(1)).thenReturn(Optional.of(user));
-        when(productRepository.findById(3)).thenReturn(Optional.of(product));
 
         // When
-        FavoriteProduct actualFavoriteProduct = favoriteProductService.createFavoriteProductEntity(userId, productId);
+        FavoriteProduct actualFavoriteProduct = favoriteProductService.createFavoriteProductEntity(Optional.of(user), Optional.of(product));
 
         // Then
         assertThat(actualFavoriteProduct).usingRecursiveComparison().isEqualTo(expectedFavoriteProduct);
@@ -70,7 +68,7 @@ public class FavoriteProductServiceImplTests {
     }
 
     @Test
-    public void getProductObjectList_shouldReturnOnlyProductsObjectsFromFavoriteProductsList() {
+    public void getUserFavoriteProducts_shouldReturnOnlyProductsObjectsFromFavoriteProductsList() {
         // Given
         int userId = 1;
         User user = User.builder()
@@ -112,7 +110,7 @@ public class FavoriteProductServiceImplTests {
         List<Product> expectedProductList = List.of(product1,product2);
 
         // When
-        List<Product> actualFavoriteProductList = favoriteProductService.getProductObjectList(userId);
+        List<Product> actualFavoriteProductList = favoriteProductService.getUserFavoriteProducts(userId);
 
         // Then
         assertEquals("getProductObjectList() should return only the product objects of the whole list",

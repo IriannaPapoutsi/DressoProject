@@ -96,8 +96,6 @@ public class CartServiceImplTests {
     @Test
     public void createCartEntity_shouldReturnCreatedCartObject() {
         // Given
-        int userId = 1;
-        int productId = 1;
         User user = User.builder()
                 .id(1)
                 .firstName("Marianna")
@@ -117,14 +115,12 @@ public class CartServiceImplTests {
                 .sku("gyht78")
                 .stock(123)
                 .build();
-        when(userRepository.findById(1)).thenReturn(Optional.of(user));
-        when(productRepository.findById(1)).thenReturn(Optional.of(product));
         Cart expectedCart = new Cart();
         expectedCart.setUser(user);
         expectedCart.setProduct(product);
 
         // When
-        Cart actualCart = cartService.createCartEntity(userId, productId);
+        Cart actualCart = cartService.createCartEntity(user, product);
 
         // Then
         assertThat(actualCart).usingRecursiveComparison().isEqualTo(expectedCart);

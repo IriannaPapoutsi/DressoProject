@@ -16,12 +16,6 @@ public class ProductServiceImpl implements ProductService {
         this.productRepository = productRepository;
     }
 
-    // TODO: This method is not needed, you may just call the repository.findAll() directly
-    @Override
-    public List<Product> getAllProducts(){
-        return productRepository.findAll();
-    }
-
     private List<Product> getAllProductsByName(String name) {
         return productRepository.findAllByNameContains(name);
     }
@@ -46,7 +40,7 @@ public class ProductServiceImpl implements ProductService {
             return getAllProductsByCategoryName(category);
         }
         else {
-            return getAllProducts();
+            return productRepository.findAll();
         }
     }
 

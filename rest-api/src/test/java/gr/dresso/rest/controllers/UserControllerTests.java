@@ -146,7 +146,7 @@ public class UserControllerTests {
     }
 
     @Test
-    public void createUser_givenAlreadyExistedUsernameRequestBody_shouldReturnBadRequestStatus() throws Exception {
+    public void createUser_givenAlreadyExistedUsernameRequestBody_shouldReturnConflictStatus() throws Exception {
         // Given
         CreateUserDTO createUserDTO = CreateUserDTO.builder()
                 .firstName("Marianna")
@@ -167,7 +167,7 @@ public class UserControllerTests {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(asJsonString(createUserDTO)))
                 // Then
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isConflict());
     }
 
     @Test
@@ -358,7 +358,7 @@ public class UserControllerTests {
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/api/users/" + userId + "/favorite-products/" + productId))
                 // Then
-                .andExpect(status().isConflict());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -371,7 +371,7 @@ public class UserControllerTests {
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/api/users/" + userId + "/favorite-products/" + productId))
                 // Then
-                .andExpect(status().isConflict());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -384,7 +384,7 @@ public class UserControllerTests {
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/api/users/" + userId + "/favorite-products/" + productId))
                 // Then
-                .andExpect(status().isConflict());
+                .andExpect(status().isBadRequest());
     }
 
     @Test

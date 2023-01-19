@@ -117,7 +117,6 @@ public class UserServiceImplTests {
     @Test
     public void updateUserEntityFromDTO_shouldReturnUpdateUserObject() {
         // Given
-        int userId = 1;
         User existedUserInDB = User.builder()
                 .firstName("Irianna")
                 .lastName("Papoutsi")
@@ -144,10 +143,9 @@ public class UserServiceImplTests {
                 .email("iriannapapoutsi@gmail.com")
                 .credits(50.0)
                 .build();
-        when(userRepository.findById(1)).thenReturn(Optional.of(existedUserInDB));
 
         // When
-        User actualUpdateUser = userService.updateUserEntityFromDTO(updateUserDTO, userId);
+        User actualUpdateUser = userService.updateUserEntityFromDTO(updateUserDTO, existedUserInDB);
 
         // Then
         assertThat(actualUpdateUser).usingRecursiveComparison().isEqualTo(expectedUpdatedUser);

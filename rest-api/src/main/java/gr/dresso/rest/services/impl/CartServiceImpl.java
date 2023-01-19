@@ -28,12 +28,7 @@ public class CartServiceImpl implements CartService {
         this.cartRepository = cartRepository;
     }
 
-    Cart createCartEntity(int userId, int productId) {
-        // TODO: Take the Optional<> objects on createCartProduct() method and use their .isPresent() method instead of using the repository to check if the entities exist
-        Optional<User> userResponse = userRepository.findById(userId); // Is this something I should instantly put in setUser()?
-        User user = userResponse.get();
-        Optional<Product> productResponse = productRepository.findById(productId);
-        Product product = productResponse.get();
+    Cart createCartEntity(User user, Product product) {
         Cart cart = new Cart();
         cart.setUser(user);
         cart.setProduct(product);
@@ -42,29 +37,31 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public ResponseEntity<Cart> createCartProduct(int userId, int productId) {
-        // TODO: Store the boolean check in a variable to make your purpose clear
-        if (!userRepository.existsById(userId)
-                || !productRepository.existsById(productId)) {
+        Optional<User> userResponse = userRepository.findById(userId);
+        Optional<Product> productResponse = productRepository.findById(productId);
+        boolean shouldNotCreateCartItem = !userResponse.isPresent()
+                || !productResponse.isPresent();
+        if (shouldNotCreateCartItem) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-        Cart cart = createCartEntity(userId, productId);
+        User user = userResponse.get();
+        Product product = productResponse.get();
+        Cart cart = createCartEntity(user, product);
         cartRepository.save(cart);
         return ResponseEntity.status(HttpStatus.CREATED).body(cart);
     }
 
-    @Override
-    public ResponseEntity<Void> deleteCart(int userId) {
-        return implementCartDeletion(userId);
-    }
-
-    // TODO: I would place this method above deleteCart() which uses it, for better readability
-    // TODO: I would rename this method to something like: clearUserCart(..)
-    private ResponseEntity<Void> implementCartDeletion(int userId) {
+    private ResponseEntity<Void> clearUserCart(int userId) {
         if (!cartRepository.existsCartByUserId(userId)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         cartRepository.deleteCartByUserId(userId);
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteCart(int userId) {
+        return clearUserCart(userId);
     }
 
     @Override
@@ -95,7 +92,6 @@ public class CartServiceImpl implements CartService {
     }
 
     double calculateCartCost(int userId) {
-        // TODO: Very nice usage of streams, good job :D!
         List<Product> cartProducts = getCartProductsListByUser(userId);
         return cartProducts
                 .stream()
@@ -119,12 +115,11 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public ResponseEntity<String> checkoutBalance(int userId) {
-        // TODO: Get the userResponse here and use isPresent() to check for existence, isntead of repository
-        if (!userRepository.existsById(userId)) {
+        Optional<User> userResponse = userRepository.findById(userId);
+        if (!userResponse.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         double totalCost = calculateCartCost(userId);
-        Optional<User> userResponse = userRepository.findById(userId);
         User user = userResponse.get();
         double credits = user.getCredits();
         if (credits < totalCost) {
@@ -133,7 +128,7 @@ public class CartServiceImpl implements CartService {
         }
         reduceUserCredits(user, totalCost);
         reduceProductStock(userId);
-        implementCartDeletion(userId);
+        clearUserCart(userId);
         return ResponseEntity.status(HttpStatus.OK).body("User credits left: "
                 + user.getCredits());
     }

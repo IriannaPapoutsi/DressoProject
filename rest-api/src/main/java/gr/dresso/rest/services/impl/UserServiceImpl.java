@@ -37,13 +37,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<User> getUser(int userId) {
-        // TODO: Here you do not need to call existsById()
-        // TODO: Below, you are using findById which returns an Optional (meaning that it can be empty if the user does not exist)
-        // TODO: You can get the optional first and call if (!userResponse.isPresent()) to see if the user exists
-        if (!userRepository.existsById(userId)) {
+        Optional<User> userResponse = userRepository.findById(userId);
+        if (!userResponse.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        Optional<User> userResponse = userRepository.findById(userId);
         User user = userResponse.get();
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
@@ -71,13 +68,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<User> createUser(CreateUserDTO createUserDTO) {
-        // TODO: Maybe the if statement below should return 409 Conflict?
-        // TODO: Generally it's a good idea to store validations into boolean variables with a name so that your goal is clearer to someone else who is reading the code
-        // TODO: e.g. boolean shouldNotCreateAccount = userRepository.existsUserByEmail(createUserDTO.getEmail()) || userLoginRepository.existsUserLoginByUsername(createUserDTO.getUsername())
-        // TODO: Then you can use the above in the if statement
-        if (userRepository.existsUserByEmail(createUserDTO.getEmail()) ||
-                userLoginRepository.existsUserLoginByUsername(createUserDTO.getUsername())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        boolean shouldNotCreateAccount = userRepository.existsUserByEmail(createUserDTO.getEmail())
+                || userLoginRepository.existsUserLoginByUsername(createUserDTO.getUsername());
+        if (shouldNotCreateAccount) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
         User user = createUserEntityFromDTO(createUserDTO);
         UserLogin userLogin = createUserLoginEntityFromDTO(user, createUserDTO);
@@ -100,16 +94,11 @@ public class UserServiceImpl implements UserService {
         if (!userRepository.existsById(userId)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        // TODO: Here you do not need the userResponse variable, you do not use it anywhere
-        Optional<User> userResponse = userRepository.findById(userId);
-        User user = userResponse.get();
         userRepository.deleteById(userId);
         return ResponseEntity.status(HttpStatus.OK).body("User successfully deleted!");
     }
 
-    User updateUserEntityFromDTO(UpdateUserDTO updateUserDTO, int userId) {
-        Optional<User> userResponse = userRepository.findById(userId);
-        User user = userResponse.get();
+    User updateUserEntityFromDTO(UpdateUserDTO updateUserDTO, User user) {
         if (updateUserDTO.getFirstName() != null) {
             user.setFirstName(updateUserDTO.getFirstName());
         }
@@ -147,15 +136,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<User> updateUser(UpdateUserDTO updateUserDTO, int userId) {
-        // TODO: As I've mentioned on another todo, you do not need to use the repository here,
-        //  you can use the optional.isPresent() method by getting the user optional here instead of inside updateUserEntityFromDTO()
-        if (!userRepository.existsById(userId)) {
+        Optional<User> userResponse = userRepository.findById(userId);
+        if (!userResponse.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        User user = updateUserEntityFromDTO(updateUserDTO, userId);
-        UserLogin userLogin = updateUserLoginEntityFromDTO(user, updateUserDTO);
-        user.setUserLogin(userLogin);
-        userRepository.save(user);
+        User user = userResponse.get();
+        User updatedUser = updateUserEntityFromDTO(updateUserDTO, user);
+        UserLogin userLogin = updateUserLoginEntityFromDTO(updatedUser, updateUserDTO);
+        updatedUser.setUserLogin(userLogin);
+        userRepository.save(updatedUser);
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
