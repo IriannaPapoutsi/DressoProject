@@ -29,6 +29,7 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
         this.favoriteProductRepository = favoriteProductRepository;
     }
 
+    // TODO: Pass the actual user and products on this method, not the Optionals
     public FavoriteProduct createFavoriteProductEntity(Optional<User> userResponse, Optional<Product> productResponse) {
         FavoriteProduct favoriteProduct = new FavoriteProduct();
         User user = userResponse.get();
@@ -43,10 +44,14 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
         Optional<User> userResponse = userRepository.findById(userId);
         Optional<Product> productResponse = productRepository.findById(productId);
         boolean userExists = userResponse.isPresent();
-        boolean productExists =productResponse.isPresent();
+        boolean productExists = productResponse.isPresent();
+        // TODO: I would move the !userExists || !productExists check here
         boolean userAndProductExist = userExists && productExists;
         boolean favoriteProductAlreadyExists =
                 favoriteProductRepository.existsFavoriteProductByUserIdAndProductId(userId, productId);
+        // TODO: If you move the !userExists || !productExists check above, then here you can check for favoriteProductAlreadyExists
+        //  without userAndProductExist check (since if it was false then a value would have already been returned)
+        //  If the value of that is true, then return CONFLICT, otherwise return CREATED like you do.
         boolean shouldCreateFavoriteProduct = userAndProductExist
                 && !favoriteProductAlreadyExists;
         if (shouldCreateFavoriteProduct) {
@@ -54,15 +59,13 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
             favoriteProductRepository.save(favoriteProduct);
             return ResponseEntity.status(HttpStatus.CREATED).body(favoriteProduct);
         }
-        // TODO: What happens if the above are not true? A conflict will be thrown if the user / product does not exist which is not true
-        // TODO: You might want to break them down into two booleans -> boolean userAndProductExist = ...
-        //  and boolean favoriteAlreadyExists = ... and then work properly
         if (!userExists || !productExists) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         if (favoriteProductAlreadyExists) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
+        // TODO: Remove this comment and do not return NULL in any case
         //return ResponseEntity.status(HttpStatus.CONFLICT).build();
         return null;
     }

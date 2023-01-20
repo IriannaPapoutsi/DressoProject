@@ -28,7 +28,8 @@ public class UserController {
     private final CartService cartService;
 
     @Autowired
-    public UserController(UserService userService, FavoriteProductService favoriteProductService, CartService cartService){
+    public UserController(UserService userService, FavoriteProductService favoriteProductService,
+                          CartService cartService) {
         this.userService = userService;
         this.favoriteProductService = favoriteProductService;
         this.cartService = cartService;
