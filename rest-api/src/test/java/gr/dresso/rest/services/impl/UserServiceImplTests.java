@@ -12,7 +12,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.util.AssertionErrors.*;
@@ -27,6 +26,7 @@ public class UserServiceImplTests {
     @InjectMocks
     private UserServiceImpl userService;
 
+    // TODO: This test may be redundant, since you also check it from the controller tests
     @Test
     public void getAllUsers_shouldReturnAllUsers() {
         // Given
@@ -114,6 +114,7 @@ public class UserServiceImplTests {
         assertThat(actualUserLogin).usingRecursiveComparison().isEqualTo(expectedUserLogin);
     }
 
+    // TODO: For this method, I would also add a test with all null values on the DTO to verify that no updates will be performed on the User
     @Test
     public void updateUserEntityFromDTO_shouldReturnUpdateUserObject() {
         // Given
@@ -151,6 +152,7 @@ public class UserServiceImplTests {
         assertThat(actualUpdateUser).usingRecursiveComparison().isEqualTo(expectedUpdatedUser);
     }
 
+    // TODO: For this method, I would also add a test with all null values on the DTO to verify that no updates will be performed on the UserLogin
     @Test
     public void updateUserLoginEntityFromDTO_shouldReturnUpdateUserLoginObject() {
         // Given
@@ -171,6 +173,8 @@ public class UserServiceImplTests {
         existedUserInDB.setUserLogin(existedUserLoginInDB);
         UpdateUserDTO updateUserDTO = new UpdateUserDTO();
         updateUserDTO.setPassword("NewerThingsOnTheWay^2");
+        // TODO: This line is redundant, you are using the same object (existedUserLoginInDB).
+        //  Make sure to check warnings.
         UserLogin expectedUserLoginInDB = existedUserLoginInDB;
         expectedUserLoginInDB.setPassword("NewerThingsOnTheWay^2");
 

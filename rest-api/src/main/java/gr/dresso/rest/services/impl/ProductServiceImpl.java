@@ -16,6 +16,7 @@ public class ProductServiceImpl implements ProductService {
         this.productRepository = productRepository;
     }
 
+    // TODO: I would create unit tests for the methods below to verify() that the correct method is being called
     private List<Product> getAllProductsByName(String name) {
         return productRepository.findAllByNameContains(name);
     }

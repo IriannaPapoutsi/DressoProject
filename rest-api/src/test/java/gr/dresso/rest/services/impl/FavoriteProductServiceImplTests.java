@@ -21,6 +21,7 @@ import static org.springframework.test.util.AssertionErrors.*;
 
 @ExtendWith(MockitoExtension.class)
 public class FavoriteProductServiceImplTests {
+
     @Mock
     private FavoriteProductRepository favoriteProductRepository;
     @Mock
@@ -34,6 +35,7 @@ public class FavoriteProductServiceImplTests {
     @Test
     public void createFavoriteProductEntity_shouldReturnCreatedFavoriteProductObject() {
         // Given
+        // TODO: Delete userId and productId since you do not use them anywhere
         int userId = 1;
         int productId = 3;
         User user = User.builder()
