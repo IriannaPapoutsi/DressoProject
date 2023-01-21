@@ -19,9 +19,15 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+// TODO: Add @DirtiesContext to make Spring reset your database after this test class is executed.
+// TODO: After each test class is executed, the database scripts will be run again and if the database is not reset with @DirtiesContext
+// TODO: then it will create conflicts and the test will fail
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 public class UserControllerTests {
+
+    // TODO: Good job on testing all scenarios :D !
+    // TODO: I would store /api/users into a private static final String variable and reference it from inside the methods
 
     @Autowired
     private MockMvc mockMvc;
@@ -33,6 +39,7 @@ public class UserControllerTests {
                         .contentType(MediaType.APPLICATION_JSON))
                 // Then
                 .andExpect(status().isOk())
+                // TODO: I would also check the structure of the users
                 .andExpect(jsonPath("$", hasSize(5)));
     }
 
@@ -58,11 +65,14 @@ public class UserControllerTests {
                         get("/api/users/" + userId))
                 // Then
                 .andExpect(status().isOk())
+                // TODO: I would also check the rest of the values for the user
                 .andExpect(jsonPath("$.id", Matchers.is(1)))
                 .andExpect(jsonPath("$.firstName", Matchers.is("Irianna")))
                 .andExpect(jsonPath("$.lastName", Matchers.is("Papoutsi")));
     }
 
+    // TODO: Why is this method public and static?
+    // TODO: I would rename this method to: transformObjectToJson (method names should be verbs)
     public static String asJsonString(final Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);
@@ -93,6 +103,7 @@ public class UserControllerTests {
                                 .content(asJsonString(createUserDTO)))
                 // Then
                 .andExpect(status().isCreated())
+                // TODO: I would check the rest of the values of the create duser
                 .andExpect(jsonPath("$.email", Matchers.is("mariannapapoutsi@gmail.com")));
     }
 
@@ -145,6 +156,7 @@ public class UserControllerTests {
                 .andExpect(status().isBadRequest());
     }
 
+    // TODO: I would also create one test to check for already existed user via email
     @Test
     public void createUser_givenAlreadyExistedUsernameRequestBody_shouldReturnConflictStatus() throws Exception {
         // Given
@@ -222,6 +234,7 @@ public class UserControllerTests {
                 .andExpect(status().isNotFound());
     }
 
+    // TODO: I would also send a request with an empty UpdateUserDTO to verify that the status code is OK but the User fields are not turned to null (not updated)
     @Test
     public void updateUserProfile_givenValidRequestBody_shouldReturnOkStatus() throws Exception {
         // Given
@@ -240,6 +253,7 @@ public class UserControllerTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(updateUserDTO)))
                 // Then
+                // TODO: I would check the response body to validate that the user fields have been updated
                 .andExpect(status().isOk());
     }
 
@@ -320,9 +334,11 @@ public class UserControllerTests {
                             .contentType(MediaType.APPLICATION_JSON))
                 // Then
                 .andExpect(status().isOk())
+                // TODO: I would also validate the contents of the response
                 .andExpect(jsonPath("$", hasSize(4)));
     }
 
+    // TODO: Remove this test since we do not check for isNotFound on this endpoint anymore and it is broken
     @Test
     public void getAllFavoriteProductsByUserId_givenInvalidUserIdPathVar_shouldReturnNotFoundStatus() throws Exception {
         // Given
@@ -345,9 +361,11 @@ public class UserControllerTests {
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/api/users/" + userId + "/favorite-products/" + productId))
                 // Then
+                // TODO: I would also check the response body
                 .andExpect(status().isCreated());
     }
 
+    // TODO: Rename method: shouldReturnConflictStatus -> shouldReturnIsNotFound
     @Test
     public void createFavoriteProduct_givenInvalidUserIdPathVar_shouldReturnConflictStatus() throws Exception {
         // Given
@@ -361,6 +379,7 @@ public class UserControllerTests {
                 .andExpect(status().isNotFound());
     }
 
+    // TODO: Rename method: shouldReturnConflictStatus -> shouldReturnIsNotFound
     @Test
     public void createFavoriteProduct_givenInvalidProductIdPathVar_shouldReturnConflictStatus() throws Exception {
         // Given
@@ -384,6 +403,7 @@ public class UserControllerTests {
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/api/users/" + userId + "/favorite-products/" + productId))
                 // Then
+                // TODO: Here you should check for conflict, not bad request
                 .andExpect(status().isBadRequest());
     }
 
@@ -397,6 +417,7 @@ public class UserControllerTests {
         mockMvc.perform(
                         MockMvcRequestBuilders.delete("/api/users/" + userId + "/favorite-products/" + productId))
                 // Then
+                // TODO: I would also check the response body
                 .andExpect(status().isOk());
     }
 
@@ -436,6 +457,7 @@ public class UserControllerTests {
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/api/users/" + userId + "/cart-products/" + productId))
                 // Then
+                // TODO: I would also check response body
                 .andExpect(status().isCreated());
     }
 
@@ -449,6 +471,7 @@ public class UserControllerTests {
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/api/users/" + userId + "/cart-products/" + productId))
                 // Then
+                // TODO: Here check for not found instead and rename method?
                 .andExpect(status().isBadRequest());
     }
 
@@ -462,10 +485,12 @@ public class UserControllerTests {
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/api/users/" + userId + "/cart-products/" + productId))
                 // Then
+                // TODO: Here check for not found instead and rename method?
                 .andExpect(status().isBadRequest());
     }
 
-      @Test
+    // TODO: Fix method name (shouldReturn?)
+    @Test
     public void deleteWholeUserCart_givenValidUserIdPathVar_shouldReturn() throws Exception{
         // Given
         int userId = 2;
@@ -473,6 +498,7 @@ public class UserControllerTests {
         // When
         mockMvc.perform(
                         MockMvcRequestBuilders.delete("/api/users/" + userId + "/cart-products/"))
+                // TODO: This test is not working (returns 404 not found)
                 // Then
                 .andExpect(status().isOk());
     }
@@ -538,6 +564,7 @@ public class UserControllerTests {
                                 .contentType(MediaType.APPLICATION_JSON))
                 // Then
                 .andExpect(status().isOk())
+                // TODO: I would also check the rest of the fields of the products
                 .andExpect(jsonPath("$.[0].id", is(3)))
                 .andExpect(jsonPath("$.[0].name", is("Lacoste Polo T-shirt")))
                 .andExpect(jsonPath("$.[0].price", is(34.99)))
@@ -578,6 +605,7 @@ public class UserControllerTests {
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/api/users/" + userId + "/checkout"))
                 // Then
+                // TODO: I would also check the response body
                 .andExpect(status().isOk());
     }
 
@@ -590,6 +618,7 @@ public class UserControllerTests {
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/api/users/" + userId + "/checkout"))
                 // Then
+                // TODO: I would also check the response body
                 .andExpect(status().isConflict());
     }
 }

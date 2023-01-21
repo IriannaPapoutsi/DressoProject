@@ -21,6 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ProductControllerTests {
 
     // TODO: Good job on testing all scenarios :D !
+    // TODO: I would store "/api/products" in a private static final String variable and reference it from inside the methods
 
     @Autowired
     private MockMvc mockMvc;

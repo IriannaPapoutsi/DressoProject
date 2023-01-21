@@ -42,6 +42,7 @@ public class CartServiceImpl implements CartService {
         // TODO: Replace !...isPresent() with isEmpty()
         boolean shouldNotCreateCartItem = !userResponse.isPresent() || !productResponse.isPresent();
         if (shouldNotCreateCartItem) {
+            // TODO: Here maybe return not found?
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
         User user = userResponse.get();
