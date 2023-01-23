@@ -16,16 +16,15 @@ public class ProductServiceImpl implements ProductService {
         this.productRepository = productRepository;
     }
 
-    // TODO: I would create unit tests for the methods below to verify() that the correct method is being called
-    private List<Product> getAllProductsByName(String name) {
+    List<Product> getAllProductsByName(String name) {
         return productRepository.findAllByNameContains(name);
     }
 
-    private List<Product> getAllProductsByCategoryName(String categoryName) {
+    List<Product> getAllProductsByCategoryName(String categoryName) {
         return productRepository.findAllByCategoryNameContains(categoryName);
     }
 
-    private List<Product> getAllProductsByNameAndCategoryName(String name, String category){
+    List<Product> getAllProductsByNameAndCategoryName(String name, String category){
         return productRepository.findAllByNameContainsAndCategoryNameContains(name, category);
     }
 

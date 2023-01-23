@@ -9,19 +9,21 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+
+import java.util.Collections;
+import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-// TODO: Add @DirtiesContext to make Spring reset your database after this test class is executed.
-// TODO: After each test class is executed, the database scripts will be run again and if the database is not reset with @DirtiesContext
-// TODO: then it will create conflicts and the test will fail
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 public class ProductControllerTests {
 
-    // TODO: Good job on testing all scenarios :D !
-    // TODO: I would store "/api/products" in a private static final String variable and reference it from inside the methods
+    private static final String STATIC_URI = "/api/products";
 
     @Autowired
     private MockMvc mockMvc;
@@ -30,135 +32,166 @@ public class ProductControllerTests {
     public void getAllProducts_shouldReturnCorrectListSize() throws Exception {
         // When
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/api/products")
+                        MockMvcRequestBuilders.get(STATIC_URI)
                                 .contentType(MediaType.APPLICATION_JSON))
                 // Then
                 .andExpect(status().isOk())
-                // TODO: I would also check the actual content of at least 1 product
-                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(17)));
+                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(17)))
+                .andExpect(jsonPath("$.[2].name", Matchers.is("Lacoste Polo T-shirt")))
+                .andExpect(jsonPath("$.[2].price", Matchers.is(34.99)))
+                .andExpect(jsonPath("$.[2].description", Matchers.is("Polo T-shirt in green color. " +
+                        "An all time classic item which has been loved by young and old alike.")))
+                .andExpect(jsonPath("$.[2].sku", Matchers.is("PTS234")))
+                .andExpect(jsonPath("$.[2].stock", Matchers.is(890)))
+                .andExpect(jsonPath("$.[2].color.id", Matchers.is(3)))
+                .andExpect(jsonPath("$.[2].color.name", Matchers.is("Green")))
+                .andExpect(jsonPath("$.[2].category.id", Matchers.is(3)))
+                .andExpect(jsonPath("$.[2].category.name", Matchers.is("T-shirt")))
+                .andExpect(jsonPath("$.[2].images[0].id", Matchers.is(3)))
+                .andExpect(jsonPath("$.[2].images[0].imageTitle", Matchers.is("Polo T-shirt")))
+                .andExpect(jsonPath("$.[2].images[0].imageURL",
+                        Matchers.is("https://shoemania21.com/wp-content/uploads/2022/12/sc_007544_a.jpeg")));
     }
 
-    // TODO: The first part of the methods names should be the name of the method that is being tested -> getAllProducts
-    // TODO: I would rename this to something like getAllProducts_providedValidName_shouldReturnExpectedProducts
     @Test
-    public void getProductsByName_givenValidRequestParam_shouldReturnOkStatus() throws Exception {
+    public void getAllProducts_providedValidName_shouldReturnExpectedProducts() throws Exception {
         // Given
-        String name = "Mini Skirt";
+        String name = "Polo T-shirt";
 
         // When
         mockMvc.perform(
-                // TODO: You can pass the name via the .queryParam() after .contentType() instead of the URL
-                        MockMvcRequestBuilders.get("/api/products?name=" + name)
-                                .contentType(MediaType.APPLICATION_JSON))
+                        MockMvcRequestBuilders.get(STATIC_URI)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .queryParam("name", name))
                 // Then
                 .andExpect(status().isOk())
-                // TODO: I would also check the rest of the field that I would want to appear on the product
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].name", Matchers.is("Mini Skirt")));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].name", Matchers.is("Lacoste Polo T-shirt")))
+                .andExpect(jsonPath("$.[0].price", Matchers.is(34.99)))
+                .andExpect(jsonPath("$.[0].description", Matchers.is("Polo T-shirt in green color. " +
+                        "An all time classic item which has been loved by young and old alike.")))
+                .andExpect(jsonPath("$.[0].sku", Matchers.is("PTS234")))
+                .andExpect(jsonPath("$.[0].stock", Matchers.is(890)))
+                .andExpect(jsonPath("$.[0].color.id", Matchers.is(3)))
+                .andExpect(jsonPath("$.[0].color.name", Matchers.is("Green")))
+                .andExpect(jsonPath("$.[0].category.id", Matchers.is(3)))
+                .andExpect(jsonPath("$.[0].category.name", Matchers.is("T-shirt")))
+                .andExpect(jsonPath("$.[0].images[0].id", Matchers.is(3)))
+                .andExpect(jsonPath("$.[0].images[0].imageTitle", Matchers.is("Polo T-shirt")))
+                .andExpect(jsonPath("$.[0].images[0].imageURL",
+                        Matchers.is("https://shoemania21.com/wp-content/uploads/2022/12/sc_007544_a.jpeg")));
     }
 
-    // TODO: The first part of the methods names should be the name of the method that is being tested -> getAllProducts
     @Test
-    public void getProductsByName_givenInvalidNameRequestParam_shouldReturnZeroListSize() throws Exception {
+    public void getAllProducts_givenInvalidNameRequestParam_shouldReturnZeroListSize() throws Exception {
         // Given
         String name = "Something else";
 
         // When
         mockMvc.perform(
-                        // TODO: You can pass the name via the .queryParam() after .contentType() instead of the URL
-                        MockMvcRequestBuilders.get("/api/products?name=" + name)
-                                .contentType(MediaType.APPLICATION_JSON))
+                        MockMvcRequestBuilders.get(STATIC_URI)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .queryParam("name", name))
                 // Then
-                // TODO: Validate the status code here
+                .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(0)));
     }
 
-    // TODO: The first part of the methods names should be the name of the method that is being tested -> getAllProducts
-    // TODO: I would rename this to something like getAllProducts_providedValidCategory_shouldReturnExpectedProducts
     @Test
-    public void getProductsByCategory_givenValidRequestParam_shouldReturnOkStatus() throws Exception {
-        // Given
-        String categoryName = "Coat";
-
-        // When
-        mockMvc.perform(
-                        // TODO: You can pass the category via the .queryParam() after .contentType() instead of the URL
-                        MockMvcRequestBuilders.get("/api/products?category=" + categoryName)
-                                .contentType(MediaType.APPLICATION_JSON))
-                // Then
-                .andExpect(status().isOk())
-                // TODO: I would also validate the other values of the product
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].category.name", Matchers.is("Coat")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(2)));
-    }
-
-    // TODO: The first part of the methods names should be the name of the method that is being tested -> getAllProducts
-    // TODO: I believe having this and the above test is a bit overkill (I would keep one of the two)
-    @Test
-    public void getProductsByCategory_givenValidStringsRequestParam_shouldReturnOkStatus() throws Exception {
+    public void getAllProducts_givenValidCategoryRequestParam_shouldReturnOkStatus() throws Exception {
         // Given
         String categoryName = "Co";
 
         // When
         mockMvc.perform(
-                        // TODO: You can pass the category via the .queryParam() after .contentType() instead of the URL
-                        MockMvcRequestBuilders.get("/api/products?category=" + categoryName)
-                                .contentType(MediaType.APPLICATION_JSON))
+                        MockMvcRequestBuilders.get(STATIC_URI)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .queryParam("category", categoryName))
                 // Then
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].category.name", Matchers.is("Coat")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(2)));
+                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(2)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].name", Matchers.is("Wool-Blend Dad Coat")))
+                .andExpect(jsonPath("$.[0].price", Matchers.is(240.0)))
+                .andExpect(jsonPath("$.[0].description", Matchers.is("Our classic wool-blend dad coat in a " +
+                        "tailored fit with luxe interior lining, side pockets and center button closure.")))
+                .andExpect(jsonPath("$.[0].sku", Matchers.is("RC234")))
+                .andExpect(jsonPath("$.[0].stock", Matchers.is(780)))
+                .andExpect(jsonPath("$.[0].color.id", Matchers.is(2)))
+                .andExpect(jsonPath("$.[0].color.name", Matchers.is("Red")))
+                .andExpect(jsonPath("$.[0].category.id", Matchers.is(1)))
+                .andExpect(jsonPath("$.[0].category.name", Matchers.is("Coat")))
+                .andExpect(jsonPath("$.[0].images[0].id", Matchers.is(7)))
+                .andExpect(jsonPath("$.[0].images[0].imageTitle", Matchers.is("Red Coat")))
+                .andExpect(jsonPath("$.[0].images[0].imageURL",
+                        Matchers.is("https://img.abercrombie.com/is/image/anf/KIC_144-1509-1016-501_model4?policy=product-large")));
     }
 
-    // TODO: The first part of the methods names should be the name of the method that is being tested -> getAllProducts
     @Test
-    public void getProductsByCategory_givenInvalidCategoryRequestParam_shouldReturnZeroListSize() throws Exception {
+    public void getAllProducts_givenInvalidCategoryRequestParam_shouldReturnZeroListSize() throws Exception {
         // Given
         String categoryName = "Not a category";
 
         // When
         mockMvc.perform(
-                        // TODO: You can pass the category via the .queryParam() after .contentType() instead of the URL
-                        MockMvcRequestBuilders.get("/api/products?category=" + categoryName)
-                                .contentType(MediaType.APPLICATION_JSON))
+                        MockMvcRequestBuilders.get(STATIC_URI)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .queryParam("category", categoryName))
                 // Then
-                // TODO: Validate the status code here
+                .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(0)));
     }
 
-    // TODO: The first part of the methods names should be the name of the method that is being tested -> getAllProducts
-    // TODO: I would call this getAllProducts_givenValidNameAndCategory_shouldReturnExpectedProducts
     @Test
-    public void getProductsByNameAndCategoryName_givenValidRequestParams_shouldReturnOkStatus() throws Exception {
+    public void getAllProducts_givenValidNameAndCategoryRequestParams_shouldReturnOkStatus() throws Exception {
         // Given
         String name = "Elegant Dress";
-        String categoryName = "Dress";
+        String categoryName = "Dre";
+        MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+        queryParams.put("name", Collections.singletonList(name));
+        queryParams.put("category", Collections.singletonList(categoryName));
 
         // When
         mockMvc.perform(
-                        // TODO: You can pass the name and category via the .queryParam() after .contentType() instead of the URL
-                        MockMvcRequestBuilders.get("/api/products?name=" + name + "&category=" + categoryName)
-                                .contentType(MediaType.APPLICATION_JSON))
+                        MockMvcRequestBuilders.get(STATIC_URI)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .queryParams(queryParams))
                 // Then
                 .andExpect(status().isOk())
-                // TODO: I would also check the other values of the products
                 .andExpect(MockMvcResultMatchers.jsonPath("$.[0].name", Matchers.is("Elegant Dress")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].category.name", Matchers.is("Dress")));
+                .andExpect(jsonPath("$.[0].id", Matchers.is(4)))
+                .andExpect(jsonPath("$.[0].price", Matchers.is(154.99)))
+                .andExpect(jsonPath("$.[0].description", Matchers.is("Mermaid style one-shoulder dress" +
+                        " crafted from crystal fabric with a front side split design.")))
+                .andExpect(jsonPath("$.[0].sku", Matchers.is("PD234")))
+                .andExpect(jsonPath("$.[0].stock", Matchers.is(457)))
+                .andExpect(jsonPath("$.[0].color.id", Matchers.is(1)))
+                .andExpect(jsonPath("$.[0].color.name", Matchers.is("Purple")))
+                .andExpect(jsonPath("$.[0].category.id", Matchers.is(4)))
+                .andExpect(jsonPath("$.[0].category.name", Matchers.is("Dress")))
+                .andExpect(jsonPath("$.[0].images[0].id", Matchers.is(4)))
+                .andExpect(jsonPath("$.[0].images[0].imageTitle", Matchers.is("Maxi Dress")))
+                .andExpect(jsonPath("$.[0].images[0].imageURL",
+                        Matchers.is("https://www.nashbyna.com/wp-content/uploads/2022/01/nash-02-scarlet-purple-skouro-" +
+                                "mov-forema-winter-summer-collection-nashbyna-natashaavloniti-greekdesigner-weddingdresses-episima-" +
+                                "foremata-vradina-foremata-1.jpg")));
     }
 
-    // TODO: The first part of the methods names should be the name of the method that is being tested -> getAllProducts
-    // TODO: I would call this something like getAllProducts_givenInvalidNameAndCategory_shouldReturnEmptyListOfProducts
+
     @Test
-    public void getProductsByNameAndCategoryName_givenInvalidRequestParams_shouldReturnZeroListSize() throws Exception {
+    public void getAllProducts_givenInvalidNameAndCategoryRequestParams_shouldReturnEmptyListOfProducts() throws Exception {
         // Given
         String name = "Name that does not exist";
         String categoryName = "Category that does not exist";
+        MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+        queryParams.put("name", Collections.singletonList(name));
+        queryParams.put("category", Collections.singletonList(categoryName));
 
         // When
         mockMvc.perform(
-                        // TODO: You can pass the name and category via the .queryParam() after .contentType() instead of the URL
-                        MockMvcRequestBuilders.get("/api/products?name=" + name + "&category=" + categoryName)
-                                .contentType(MediaType.APPLICATION_JSON))
-                // Then
+                        MockMvcRequestBuilders.get(STATIC_URI)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .queryParams(queryParams))
+        // Then
                 .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(0)));
     }
+
 }

@@ -39,11 +39,9 @@ public class CartServiceImpl implements CartService {
     public ResponseEntity<Cart> createCartProduct(int userId, int productId) {
         Optional<User> userResponse = userRepository.findById(userId);
         Optional<Product> productResponse = productRepository.findById(productId);
-        // TODO: Replace !...isPresent() with isEmpty()
-        boolean shouldNotCreateCartItem = !userResponse.isPresent() || !productResponse.isPresent();
+        boolean shouldNotCreateCartItem = userResponse.isEmpty() || productResponse.isEmpty();
         if (shouldNotCreateCartItem) {
-            // TODO: Here maybe return not found?
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         User user = userResponse.get();
         Product product = productResponse.get();
@@ -117,8 +115,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public ResponseEntity<String> checkoutBalance(int userId) {
         Optional<User> userResponse = userRepository.findById(userId);
-        // TODO: Use isEmpty() instead
-        if (!userResponse.isPresent()) {
+        if (userResponse.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         double totalCost = calculateCartCost(userId);

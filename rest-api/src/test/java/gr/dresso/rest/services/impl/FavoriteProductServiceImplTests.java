@@ -35,9 +35,6 @@ public class FavoriteProductServiceImplTests {
     @Test
     public void createFavoriteProductEntity_shouldReturnCreatedFavoriteProductObject() {
         // Given
-        // TODO: Delete userId and productId since you do not use them anywhere
-        int userId = 1;
-        int productId = 3;
         User user = User.builder()
                 .id(1)
                 .firstName("Marianna")
@@ -62,7 +59,7 @@ public class FavoriteProductServiceImplTests {
         expectedFavoriteProduct.setProduct(product);
 
         // When
-        FavoriteProduct actualFavoriteProduct = favoriteProductService.createFavoriteProductEntity(Optional.of(user), Optional.of(product));
+        FavoriteProduct actualFavoriteProduct = favoriteProductService.createFavoriteProductEntity(user, product);
 
         // Then
         assertThat(actualFavoriteProduct).usingRecursiveComparison().isEqualTo(expectedFavoriteProduct);

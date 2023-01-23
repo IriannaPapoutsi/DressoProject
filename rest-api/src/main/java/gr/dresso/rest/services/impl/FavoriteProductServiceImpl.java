@@ -29,12 +29,9 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
         this.favoriteProductRepository = favoriteProductRepository;
     }
 
-    // TODO: Pass the actual user and products on this method, not the Optionals
-    public FavoriteProduct createFavoriteProductEntity(Optional<User> userResponse, Optional<Product> productResponse) {
+    public FavoriteProduct createFavoriteProductEntity(User user, Product product) {
         FavoriteProduct favoriteProduct = new FavoriteProduct();
-        User user = userResponse.get();
         favoriteProduct.setUser(user);
-        Product product = productResponse.get();
         favoriteProduct.setProduct(product);
         return favoriteProduct;
     }
@@ -43,31 +40,22 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
     public ResponseEntity<FavoriteProduct> createFavoriteProduct(int userId, int productId) {
         Optional<User> userResponse = userRepository.findById(userId);
         Optional<Product> productResponse = productRepository.findById(productId);
-        boolean userExists = userResponse.isPresent();
-        boolean productExists = productResponse.isPresent();
-        // TODO: I would move the !userExists || !productExists check here
-        boolean userAndProductExist = userExists && productExists;
+        boolean userDoesNotExists = userResponse.isEmpty();
+        boolean productDoesNotExists = productResponse.isEmpty();
         boolean favoriteProductAlreadyExists =
                 favoriteProductRepository.existsFavoriteProductByUserIdAndProductId(userId, productId);
-        // TODO: If you move the !userExists || !productExists check above, then here you can check for favoriteProductAlreadyExists
-        //  without userAndProductExist check (since if it was false then a value would have already been returned)
-        //  If the value of that is true, then return CONFLICT, otherwise return CREATED like you do.
-        boolean shouldCreateFavoriteProduct = userAndProductExist
-                && !favoriteProductAlreadyExists;
-        if (shouldCreateFavoriteProduct) {
-            FavoriteProduct favoriteProduct = createFavoriteProductEntity(userResponse, productResponse);
-            favoriteProductRepository.save(favoriteProduct);
-            return ResponseEntity.status(HttpStatus.CREATED).body(favoriteProduct);
-        }
-        if (!userExists || !productExists) {
+        if (userDoesNotExists || productDoesNotExists) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         if (favoriteProductAlreadyExists) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
-        // TODO: Remove this comment and do not return NULL in any case
-        //return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        return null;
+        User user = userResponse.get();
+        Product product = productResponse.get();
+        FavoriteProduct favoriteProduct = createFavoriteProductEntity(user, product);
+        favoriteProductRepository.save(favoriteProduct);
+        return ResponseEntity.status(HttpStatus.CREATED).body(favoriteProduct);
+
     }
 
     @Override

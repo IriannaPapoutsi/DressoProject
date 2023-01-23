@@ -10,17 +10,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
-
 public class CartServiceImplTests {
 
     @Mock
@@ -162,23 +161,18 @@ public class CartServiceImplTests {
         int userId = 1;
         List<Cart> cartList = mockCartList();
         when(cartRepository.findAllByUserId(1)).thenReturn(cartList);
-        // TODO: Rename this to expectedStocks (it's an array, not a list)
-        int expectedStockList[] = {122, 79};
+        int expectedStocks[] = {122, 79};
 
         // When
-        // TODO: when() statements should be placed on the // Given section
-        // TODO: The when() statement below is redundant
-        when(productRepository.save(Mockito.any(Product.class)))
-                .thenAnswer(i -> i.getArguments()[0]);
         cartService.reduceProductStock(userId);
 
         // Then
-        // TODO: You can use the following to verify that the stocks of the products have been reduced and that the save method of the
-        // TODO: repository has been called for each product
-//        assertEquals("Message", expectedStockList[0], cartList.get(0).getProduct().getStock());
-//        assertEquals("Message", expectedStockList[1], cartList.get(1).getProduct().getStock());
-//        verify(productRepository).save(cartList.get(0).getProduct());
-//        verify(productRepository).save(cartList.get(1).getProduct());
+        assertEquals("reduceProductStock should reduce each product's stock properly",
+                expectedStocks[0], cartList.get(0).getProduct().getStock());
+        assertEquals("reduceProductStock should reduce each product's stock properly",
+                expectedStocks[1], cartList.get(1).getProduct().getStock());
+        verify(productRepository).save(cartList.get(0).getProduct());
+        verify(productRepository).save(cartList.get(1).getProduct());
     }
 
     @Test
@@ -199,15 +193,12 @@ public class CartServiceImplTests {
         double expectedRemainedCredits = 50.0;
 
         // When
-        // TODO: When statements should be placed on the // Given section
-        // TODO: This when statement is redundant since you do not use the value that is returned by userRepository.save anywhere
-        when(userRepository.save(Mockito.any(User.class)))
-                .thenAnswer(i -> i.getArguments()[0]);
         cartService.reduceUserCredits(user, totalCost);
 
         // Then
-        // TODO: I would also verify() that userRepository.save was called
         assertEquals("reduceUserCredits() should reduce the credits of the user based on total cost",
                 expectedRemainedCredits, user.getCredits());
+        verify(userRepository).save(user);
     }
+
 }

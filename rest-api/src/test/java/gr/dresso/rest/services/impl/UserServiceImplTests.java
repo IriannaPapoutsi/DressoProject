@@ -4,43 +4,18 @@ import gr.dresso.rest.dto.CreateUserDTO;
 import gr.dresso.rest.dto.UpdateUserDTO;
 import gr.dresso.rest.entities.User;
 import gr.dresso.rest.entities.UserLogin;
-import gr.dresso.rest.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
-
-import static org.mockito.Mockito.when;
-import static org.springframework.test.util.AssertionErrors.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceImplTests {
 
-    @Mock
-    private UserRepository userRepository;
-
     @InjectMocks
     private UserServiceImpl userService;
-
-    // TODO: This test may be redundant, since you also check it from the controller tests
-    @Test
-    public void getAllUsers_shouldReturnAllUsers() {
-        // Given
-        User user1 = new User();
-        User user2 = new User();
-        List<User> userList = List.of(user1, user2);
-        when(userRepository.findAll()).thenReturn(userList);
-
-        // When
-        List<User> actualUsers = userService.getAllUsers();
-
-        // Then
-        assertEquals("getAllUsers() should use repository to get users", userList, actualUsers);
-    }
 
     @Test
     public void createUserEntityFromDTO_shouldReturnUserObject() {
@@ -114,7 +89,6 @@ public class UserServiceImplTests {
         assertThat(actualUserLogin).usingRecursiveComparison().isEqualTo(expectedUserLogin);
     }
 
-    // TODO: For this method, I would also add a test with all null values on the DTO to verify that no updates will be performed on the User
     @Test
     public void updateUserEntityFromDTO_shouldReturnUpdateUserObject() {
         // Given
@@ -152,7 +126,27 @@ public class UserServiceImplTests {
         assertThat(actualUpdateUser).usingRecursiveComparison().isEqualTo(expectedUpdatedUser);
     }
 
-    // TODO: For this method, I would also add a test with all null values on the DTO to verify that no updates will be performed on the UserLogin
+    @Test
+    public void updateUserEntityFromDTO_givenNullDTO_shouldReturnSameUserObject() {
+        // Given
+        User existedUserInDB = User.builder()
+                .firstName("Irianna")
+                .lastName("Papoutsi")
+                .postalCode("11526")
+                .country("Greece")
+                .city("Athens")
+                .address("Rostoviou 30-32")
+                .email("iriannapapoutsi@gmail.com")
+                .credits(50.0)
+                .build();
+        UpdateUserDTO updateUserDTO = new UpdateUserDTO();
+        // When
+        User actualUpdateUser = userService.updateUserEntityFromDTO(updateUserDTO, existedUserInDB);
+
+        // Then
+        assertThat(actualUpdateUser).usingRecursiveComparison().isEqualTo(existedUserInDB);
+    }
+
     @Test
     public void updateUserLoginEntityFromDTO_shouldReturnUpdateUserLoginObject() {
         // Given
@@ -173,17 +167,40 @@ public class UserServiceImplTests {
         existedUserInDB.setUserLogin(existedUserLoginInDB);
         UpdateUserDTO updateUserDTO = new UpdateUserDTO();
         updateUserDTO.setPassword("NewerThingsOnTheWay^2");
-        // TODO: This line is redundant, you are using the same object (existedUserLoginInDB).
-        //  Make sure to check warnings.
-        UserLogin expectedUserLoginInDB = existedUserLoginInDB;
-        expectedUserLoginInDB.setPassword("NewerThingsOnTheWay^2");
+        existedUserLoginInDB.setPassword("NewerThingsOnTheWay^2");
 
         // When
         UserLogin actualUpdateUserLogin = userService.updateUserLoginEntityFromDTO(existedUserInDB, updateUserDTO);
 
         // Then
-        assertThat(actualUpdateUserLogin).usingRecursiveComparison().isEqualTo(expectedUserLoginInDB);
+        assertThat(actualUpdateUserLogin).usingRecursiveComparison().isEqualTo(existedUserLoginInDB);
     }
 
+    @Test
+    public void updateUserLoginEntityFromDTO_givenNullDTO_shouldReturnSameUserLoginObject() {
+        // Given
+        User existedUserInDB = User.builder()
+                .firstName("Irianna")
+                .lastName("Papoutsi")
+                .postalCode("11526")
+                .country("Greece")
+                .city("Athens")
+                .address("Rostoviou 30-32")
+                .email("iriannapapoutsi@gmail.com")
+                .credits(50.0)
+                .build();
+        UserLogin existedUserLoginInDB = UserLogin.builder()
+                .password("UpToNewThings!!3")
+                .username("italian-iri")
+                .build();
+        existedUserInDB.setUserLogin(existedUserLoginInDB);
+        UpdateUserDTO updateUserDTO = new UpdateUserDTO();
+
+        // When
+        UserLogin actualUpdateUserLogin = userService.updateUserLoginEntityFromDTO(existedUserInDB, updateUserDTO);
+
+        // Then
+        assertThat(actualUpdateUserLogin).usingRecursiveComparison().isEqualTo(existedUserLoginInDB);
+    }
 
 }

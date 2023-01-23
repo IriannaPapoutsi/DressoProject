@@ -38,8 +38,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<User> getUser(int userId) {
         Optional<User> userResponse = userRepository.findById(userId);
-        // TODO: Replace this with isEmpty check
-        if (!userResponse.isPresent()) {
+        if (userResponse.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         User user = userResponse.get();
@@ -138,8 +137,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<User> updateUser(UpdateUserDTO updateUserDTO, int userId) {
         Optional<User> userResponse = userRepository.findById(userId);
-        // TODO: Replace this with the isEmpty check
-        if (!userResponse.isPresent()) {
+        if (userResponse.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         User user = userResponse.get();
